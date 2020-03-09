@@ -1,5 +1,5 @@
 import express, { RequestHandler } from 'express';
-import { scaleCommunicationService } from '../services/scale_communication_service';
+import { scaleCommunicationService } from '../services/ScaleCommunicationService';
 import { StatusResponse, ConnectResponse } from '../types';
 
 export const connectionRouter = express.Router();

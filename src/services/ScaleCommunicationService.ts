@@ -1,6 +1,6 @@
 import { OUT_PIPE_PATH, IN_PIPE_PATH } from '../config';
 import { Pipe } from '../classes/Pipe';
-import { _b } from '../utils/bytes_convertion';
+import { _b } from '../utils/bytesConvertion';
 import { merge, forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConnectResponse } from '../types';
