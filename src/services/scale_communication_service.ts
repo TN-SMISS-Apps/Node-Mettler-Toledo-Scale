@@ -3,6 +3,7 @@ import { Pipe } from '../classes/Pipe';
 import { _b } from '../utils/bytes_convertion';
 import { merge, forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { ConnectResponse } from '../types';
 
 // handles
 class ScaleCommunicationService {
@@ -11,8 +12,11 @@ class ScaleCommunicationService {
 
   constructor() {}
 
-  init() {
-    // TODO: handle when scale already connected
+  init(): Promise<ConnectResponse> {
+    // TODO: handle when only 1 pipe connects
+    if (this.isConnected) {
+      return Promise.resolve({ input: true, output: true });
+    }
     this.input_pipe = new Pipe(IN_PIPE_PATH);
     this.input_pipe.connect();
     this.output_pipe = new Pipe(OUT_PIPE_PATH);

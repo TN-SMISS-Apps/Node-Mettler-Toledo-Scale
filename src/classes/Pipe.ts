@@ -5,7 +5,7 @@ import { Observable, fromEvent, BehaviorSubject, Subject } from 'rxjs';
 export class Pipe {
   public socket!: Socket;
   public is_connected$ = new BehaviorSubject(false);
-  public errors$ = new Subject();
+  public errors$ = new Subject<Error>();
   // public data$!: BehaviorSubject<Buffer>;
   public data$!: Observable<Buffer>;
 
@@ -26,7 +26,8 @@ export class Pipe {
   disconnect() {
     if(this.socket) {
       this.socket.end();
-      this.socket.removeAllListeners();
+      // 👇 dont think this is required
+      // this.socket.removeAllListeners();
     }
   }
 }
