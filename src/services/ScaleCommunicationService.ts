@@ -4,6 +4,7 @@ import { _b } from '../utils/bytesConvertion';
 import { merge, forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConnectResponse } from '../types';
+import { BufferTranslator } from '../classes/BufferTranslator';
 
 // handles
 class ScaleCommunicationService {
@@ -46,28 +47,48 @@ class ScaleCommunicationService {
     );
   }
 
-  private sendToScale(buffer: Buffer) {
-    this.input_pipe.socket.write(buffer);
-  }
-
-  private async requestCurrentWeight() {
-    return Promise.resolve(Buffer.from([_b.NAK]));
-
+  private requestScale(buffer: Buffer): Promise<Buffer> {
     return new Promise(resolve => {
-      const { EOT, ENQ } = _b;
       const dataSub = this.output_pipe.data$.subscribe(response => {
         console.log(response);
         dataSub.unsubscribe();
         resolve(response);
       });
-      this.sendToScale(Buffer.from([EOT, ENQ]));
+      this.input_pipe.socket.write(buffer);
     });
+  }
+
+  private async requestCurrentWeight(): Promise<Buffer> {
+    // TODO: 
+    // handle nak, then switch to this 👉 <Buffer 02 30 32 1b 33 1b 30 30 34 37 36 1b 30 30 30 30 30 30 1b 30 30 30 30 30 30 03>
+    // handle real weight
+    // then remove stub 👇
+    return Promise.resolve(Buffer.from([_b.NAK]));
+
+    const { EOT, ENQ } = _b;
+    const buf = Buffer.from([EOT, ENQ]);
+    return this.requestScale(buf);
+  }
+
+  private async requestNakExplanation(): Promise<Buffer> {
+    // TODO: remove stub 👇
+    return Promise.resolve(Buffer.from([0x02, 0x30, 0x39, 0x1b, 0x30, 0x31, 0x03]));
+
+    const { EOT, STX, D0, D8, ETX } = _b;
+    const buf = Buffer.from([EOT, STX, D0, D8, ETX]);
+    return this.requestScale(buf);
   }
 
   async getWeight() {
     const weight = await this.requestCurrentWeight();
-    console.log(weight);
-    return "kek"
+    if (BufferTranslator.isNak(weight)) {
+      const why = await this.requestNakExplanation();
+      BufferTranslator.parseNakReason(why)
+      // translate and return
+    } else {
+      // translate and return
+    }
+    return 'kek';
   }
 }
 

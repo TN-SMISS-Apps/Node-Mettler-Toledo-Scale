@@ -6,7 +6,6 @@ export class Pipe {
   public socket!: Socket;
   public is_connected$ = new BehaviorSubject(false);
   public errors$ = new Subject<Error>();
-  // public data$!: BehaviorSubject<Buffer>;
   public data$!: Observable<Buffer>;
 
   constructor(private path: string) {}
@@ -20,7 +19,6 @@ export class Pipe {
       this.errors$.next(err);
     });
     this.data$ = fromEvent(this.socket, 'data');
-    // this.socket.on('data', data => this.data$.next(data));
   }
 
   disconnect() {

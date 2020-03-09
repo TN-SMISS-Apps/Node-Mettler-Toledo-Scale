@@ -1,19 +1,20 @@
 import { RequestHandler, Router } from 'express';
 import { scaleCommunicationService } from '../services/ScaleCommunicationService';
-import { BadRequestError } from '../types/BadRequestError.type';
+// import { BadRequestError } from '../types';
 
 export const scaleRouter = Router();
 
-const IsScaleConnectedMiddleware: RequestHandler = (_, res, next) => {
-  if (!scaleCommunicationService.isConnected) {
-    const response: BadRequestError = {
-      message: 'App is not connected to scale (pipes)',
-    };
-    res.status(400).send(response);
-  } else next();
-};
+// TODO: uncomment 💅
+// const IsScaleConnectedMiddleware: RequestHandler = (_, res, next) => {
+//   if (!scaleCommunicationService.isConnected) {
+//     const response: BadRequestError = {
+//       message: 'App is not connected to scale (pipes)',
+//     };
+//     res.status(400).send(response);
+//   } else next();
+// };
 
-scaleRouter.use(IsScaleConnectedMiddleware);
+// scaleRouter.use(IsScaleConnectedMiddleware);
 
 // set unit price, tare, text
 const SettingsView: RequestHandler = (req, res) => {
