@@ -50,7 +50,9 @@ class ScaleCommunicationService {
     this.input_pipe.socket.write(buffer);
   }
 
-  async requestCurrentWeight() {
+  private async requestCurrentWeight() {
+    return Promise.resolve(Buffer.from([_b.NAK]));
+
     return new Promise(resolve => {
       const { EOT, ENQ } = _b;
       const dataSub = this.output_pipe.data$.subscribe(response => {
@@ -60,6 +62,12 @@ class ScaleCommunicationService {
       });
       this.sendToScale(Buffer.from([EOT, ENQ]));
     });
+  }
+
+  async getWeight() {
+    const weight = await this.requestCurrentWeight();
+    console.log(weight);
+    return "kek"
   }
 }
 

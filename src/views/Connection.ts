@@ -1,8 +1,8 @@
-import express, { RequestHandler } from 'express';
+import { RequestHandler, Router } from 'express';
 import { scaleCommunicationService } from '../services/ScaleCommunicationService';
 import { StatusResponse, ConnectResponse } from '../types';
 
-export const connectionRouter = express.Router();
+export const connectionRouter = Router();
 
 const StatusView: RequestHandler = (_, res) => {
   const resp: StatusResponse = { is_connected: scaleCommunicationService.isConnected };
