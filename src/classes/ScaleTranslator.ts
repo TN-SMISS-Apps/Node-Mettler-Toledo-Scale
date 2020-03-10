@@ -13,9 +13,7 @@ export class ScaleTranslator {
    */
   static translateStringToFloat(num: string, precision: number): number {
     const sub1 = num.slice(0, num.length - precision);
-    console.log(sub1);
     const sub2 = num.slice(num.length - precision);
-    console.log(sub2);
     return Number(sub1 + '.' + sub2);
   }
 
