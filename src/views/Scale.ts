@@ -18,12 +18,21 @@ const IsScaleConnectedMiddleware: RequestHandler = (_, res, next) => {
 scaleRouter.use(IsScaleConnectedMiddleware);
 
 const SettingsView: RequestHandler = async (req, res) => {
-  const data = SettingSchema.validate(req.body)
-  if(data.errors || data.errors) {
-    res.send(data);
+  const data = SettingSchema.validate(req.body);
+  if (data.error || data.errors) {
+    const err: BadRequestError = {
+      message: 'Validation failed',
+      error_code: 'VALIDATION',
+      error: { ...data.error, ...data.errors },
+    };
+    res.send(err)
   } else {
-    await scaleCommunicationService.setSettings(data.value)
-    res.sendStatus(200)
+    scaleCommunicationService
+      .setSettings(data.value)
+      .then(_ => res.sendStatus(200))
+      .catch((err: BadRequestError) => {
+        res.status(409).send(err);
+      });
   }
 };
 
