@@ -1,20 +1,20 @@
 import { RequestHandler, Router } from 'express';
 import { scaleCommunicationService } from '../services/ScaleCommunicationService';
-// import { BadRequestError } from '../types';
+import { BadRequestError, WeightSuccessResponse } from '../types';
 
 export const scaleRouter = Router();
 
-// TODO: uncomment 💅
-// const IsScaleConnectedMiddleware: RequestHandler = (_, res, next) => {
-//   if (!scaleCommunicationService.isConnected) {
-//     const response: BadRequestError = {
-//       message: 'App is not connected to scale (pipes)',
-//     };
-//     res.status(400).send(response);
-//   } else next();
-// };
+const IsScaleConnectedMiddleware: RequestHandler = (_, res, next) => {
+  if (!scaleCommunicationService.isConnected) {
+    const response: BadRequestError = {
+      message: 'App is not connected to scale (pipes)',
+      error_code: 'ENOENT',
+    };
+    res.status(400).send(response);
+  } else next();
+};
 
-// scaleRouter.use(IsScaleConnectedMiddleware);
+scaleRouter.use(IsScaleConnectedMiddleware);
 
 // set unit price, tare, text
 const SettingsView: RequestHandler = (req, res) => {
@@ -23,8 +23,12 @@ const SettingsView: RequestHandler = (req, res) => {
 };
 
 const WeightView: RequestHandler = async (_, res) => {
-  await scaleCommunicationService.getWeight();
-  res.send('Hallo');
+  scaleCommunicationService
+    .getWeight()
+    .then((resp: WeightSuccessResponse) => res.send(resp))
+    .catch((err: BadRequestError) => {
+      res.status(409).send(err);
+    });
 };
 
 scaleRouter.post('/settings', SettingsView);

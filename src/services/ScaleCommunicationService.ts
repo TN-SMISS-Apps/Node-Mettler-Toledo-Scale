@@ -59,21 +59,12 @@ class ScaleCommunicationService {
   }
 
   private async requestCurrentWeight(): Promise<Buffer> {
-    // TODO: 
-    // handle nak, then switch to this 👉 <Buffer 02 30 32 1b 33 1b 30 30 34 37 36 1b 30 30 30 30 30 30 1b 30 30 30 30 30 30 03>
-    // handle real weight
-    // then remove stub 👇
-    return Promise.resolve(Buffer.from([_b.NAK]));
-
     const { EOT, ENQ } = _b;
     const buf = Buffer.from([EOT, ENQ]);
     return this.requestScale(buf);
   }
 
   private async requestNakExplanation(): Promise<Buffer> {
-    // TODO: remove stub 👇
-    return Promise.resolve(Buffer.from([0x02, 0x30, 0x39, 0x1b, 0x30, 0x31, 0x03]));
-
     const { EOT, STX, D0, D8, ETX } = _b;
     const buf = Buffer.from([EOT, STX, D0, D8, ETX]);
     return this.requestScale(buf);
@@ -83,12 +74,10 @@ class ScaleCommunicationService {
     const weight = await this.requestCurrentWeight();
     if (BufferTranslator.isNak(weight)) {
       const why = await this.requestNakExplanation();
-      BufferTranslator.parseNakReason(why)
-      // translate and return
+      throw BufferTranslator.parseNakReason(why);
     } else {
-      // translate and return
+      return BufferTranslator.parseValidWeight(weight)
     }
-    return 'kek';
   }
 }
 

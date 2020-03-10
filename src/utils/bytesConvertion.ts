@@ -9,7 +9,8 @@ export const _b = {
   BEL: 0x07,
   BS: 0x08,
   HT: 0x09,
-  NL: 0x0a,
+  // 👆 0-9
+  NL: 0x0a, // 10
   VT: 0x0b,
   NP: 0x0c,
   CR: 0x0d,
@@ -19,7 +20,8 @@ export const _b = {
   DC1: 0x11,
   DC2: 0x12,
   DC3: 0x13,
-  DC4: 0x14,
+  // 👆 10 - 19
+  DC4: 0x14, //20
   NAK: 0x15,
   SYN: 0x16,
   ETB: 0x17,
@@ -29,9 +31,14 @@ export const _b = {
   ESC: 0x1b,
   FS: 0x1c,
   GS: 0x1d,
-  RS: 0x1e,
-  US: 0x1f,
-  D0: 0x30,
+  // 👆 20 - 29
+  RS: 0x1e, // 30
+  US: 0x1f, // 31
+  SPACE: 0x20, // 32
+  BANG: 0x21, // 33
+  DOUBLE_QUOTE: 0x22, // 34
+  // 👇 48 - 57
+  D0: 0x30, 
   D1: 0x31,
   D2: 0x32,
   D3: 0x33,

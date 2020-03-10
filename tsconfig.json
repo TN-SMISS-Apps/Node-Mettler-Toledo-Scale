@@ -4,9 +4,10 @@
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
-    "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
   },
