@@ -1,0 +1,177 @@
+{
+	"info": {
+		"_postman_id": "46e45fe3-ccca-4dcd-a261-d9b53c3121b0",
+		"name": "Node Mettler Toledo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get connection status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/pipes/status",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pipes",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Connect to scale pipes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/pipes/connect",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pipes",
+						"connect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Disconnect from pipes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/pipes/disconnect",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"pipes",
+						"disconnect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Weight",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/scale/weight",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"scale",
+						"weight"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change scale settings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tare\": 0.1,\n\t\"unit_price\": 19.32,\n\t\"description_text\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						},
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/scale/settings",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"scale",
+						"settings"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
