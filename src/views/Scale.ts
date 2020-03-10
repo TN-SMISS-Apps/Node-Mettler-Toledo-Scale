@@ -1,6 +1,7 @@
 import { RequestHandler, Router } from 'express';
 import { scaleCommunicationService } from '../services/ScaleCommunicationService';
 import { BadRequestError, WeightSuccessResponse } from '../types';
+import { SettingSchema } from '../utils/settings.schema';
 
 export const scaleRouter = Router();
 
@@ -16,10 +17,14 @@ const IsScaleConnectedMiddleware: RequestHandler = (_, res, next) => {
 
 scaleRouter.use(IsScaleConnectedMiddleware);
 
-// set unit price, tare, text
-const SettingsView: RequestHandler = (req, res) => {
-  console.log(req.body);
-  res.send(200);
+const SettingsView: RequestHandler = async (req, res) => {
+  const data = SettingSchema.validate(req.body)
+  if(data.errors || data.errors) {
+    res.send(data);
+  } else {
+    await scaleCommunicationService.setSettings(data.value)
+    res.sendStatus(200)
+  }
 };
 
 const WeightView: RequestHandler = async (_, res) => {

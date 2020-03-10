@@ -1,13 +1,27 @@
 import { _b } from '../utils/bytesConvertion';
-import { BadRequestError, WeightSuccessResponse } from '../types';
+import {ScaleTranslator} from './ScaleTranslator'
+import { BadRequestError, WeightSuccessResponse, Settings } from '../types';
 
 export class BufferTranslator {
-  // checks if buffer is nak
+  /**
+   * checks if provided buffer is NAK (negative acknowledgement)
+   */
   static isNak(buf: Buffer): boolean {
     return buf.equals(Buffer.from([_b.NAK]));
   }
 
-  // removes START and END, splits buffer into subbuffers divided by chunks
+  /**
+   * checks if provided buffer is ACK (acknowledgement)
+   */
+  static isAck(buf: Buffer): boolean {
+    return buf.equals(Buffer.from([_b.ACK]));
+  }
+
+  /**
+   * removes START and END, splits buffer into subbuffers divided by chunks
+   * @param _buf - buffer to be parsed
+   * @param separator - byte to be splitted by (ESC = default)
+   */
   static parse(_buf: Buffer, separator: number = _b.ESC): Buffer[] {
     let buf = Buffer.from(_buf);
     // remove STX and ETX bytes
@@ -27,29 +41,30 @@ export class BufferTranslator {
     return chunks;
   }
 
-  // checks nak reason according to dialog6 docs
+  /**
+   * checks nak reason according to dialog6 docs
+   */
   static parseNakReason(_buf: Buffer): BadRequestError {
     const chunks = this.parse(_buf);
-    const response_bytes = Array.from(chunks[1].values());
-    const error_code = response_bytes.join('');
+    const error_code = chunks[1].toString('utf8');
     const message = ((): string => {
       // prettier-ignore
       switch (error_code) {
-        case [_b.D0, _b.D0].join(''): return 'there is no error present';
-        case [_b.D0, _b.D1].join(''): return 'GENERAL error on scale';
-        case [_b.D0, _b.D2].join(''): return 'PARITY error, or more characters than permitted';
-        case [_b.D1, _b.D0].join(''): return 'incorrect record number detected';
-        case [_b.D1, _b.D1].join(''): return 'no valid unit price';
-        case [_b.D1, _b.D2].join(''): return 'no valid tare value received';
-        case [_b.D1, _b.D3].join(''): return 'no valid text received';
-        case [_b.D2, _b.D0].join(''): return 'scale still in motion (no equilibrium)';
-        case [_b.D2, _b.D1].join(''): return 'no motion since last weighing operation';
-        case [_b.D2, _b.D2].join(''): return 'price calculation not yet available';
-        case [_b.D3, _b.D0].join(''): return 'scale in MIN range';
-        case [_b.D3, _b.D1].join(''): return 'scale in underload range or negative weight display';
-        case [_b.D3, _b.D2].join(''): return 'scale in overload range';
-        case [_b.D3, _b.D3].join(''): return 'scale was not unloaded for approx. 2 minutes';
-        case [_b.D5, _b.D6].join(''): return 'Scanners with scale sentry function: the weighing item was not positioned correctly on the load plate';
+        case '00': return 'there is no error present';
+        case '01': return 'GENERAL error on scale';
+        case '02': return 'PARITY error, or more characters than permitted';
+        case '10': return 'incorrect record number detected';
+        case '11': return 'no valid unit price';
+        case '12': return 'no valid tare value received';
+        case '13': return 'no valid text received';
+        case '20': return 'scale still in motion (no equilibrium)';
+        case '21': return 'no motion since last weighing operation';
+        case '22': return 'price calculation not yet available';
+        case '30': return 'scale in MIN range';
+        case '31': return 'scale in underload range or negative weight display';
+        case '32': return 'scale in overload range';
+        case '33': return 'scale was not unloaded for approx. 2 minutes';
+        case '56': return 'Scanners with scale sentry function: the weighing item was not positioned correctly on the load plate';
         default:
           return 'Unknown error';
       }
@@ -57,6 +72,9 @@ export class BufferTranslator {
     return { message, error_code };
   }
 
+  /**
+   * parses weight data from buffer
+   */
   static parseValidWeight(_buf: Buffer): WeightSuccessResponse {
     let chunks = this.parse(_buf);
     const [_, b_scale_status, b_weight, b_unit_price, b_selling_price] = chunks;
@@ -76,11 +94,29 @@ export class BufferTranslator {
     const weight = b_weight.toString('utf8');
     const unit_price = b_unit_price.toString('utf8');
     const selling_price = b_selling_price.toString('utf8');
+    // TODO: to normal values 
     return {
       scale_status,
-      weight,
-      unit_price,
-      selling_price,
+      weight: ScaleTranslator.translateStringToFloat(weight, 3),
+      unit_price: ScaleTranslator.translateStringToFloat(unit_price, unit_price.length - 4),
+      selling_price: ScaleTranslator.translateStringToFloat(selling_price, 2),
     };
+  }
+
+  /**
+   * create a buffer for changing price/tare/text values
+   * from Settings object
+   */
+  static createSettingsRequest(settings: Settings): Buffer {
+    const start = Buffer.from([_b.EOT, _b.STX, _b.D0, _b.D5]);
+
+    const esc = Buffer.from([_b.ESC]);
+
+    const unit_price = Buffer.from(settings.unit_price, 'ascii');
+    const tare = Buffer.from(settings.tare, 'ascii');
+    const text = Buffer.from(settings.description_text, 'ascii');
+
+    const end = Buffer.from([_b.ETX]);
+    return Buffer.concat([start, esc, unit_price, esc, tare, esc, text, end]);
   }
 }

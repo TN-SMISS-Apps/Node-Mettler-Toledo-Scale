@@ -3,8 +3,9 @@ import { Pipe } from '../classes/Pipe';
 import { _b } from '../utils/bytesConvertion';
 import { merge, forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { ConnectResponse } from '../types';
+import { ConnectResponse, ValidatedSettings, Settings } from '../types';
 import { BufferTranslator } from '../classes/BufferTranslator';
+import { ScaleTranslator } from '../classes/ScaleTranslator';
 
 // handles
 class ScaleCommunicationService {
@@ -13,6 +14,10 @@ class ScaleCommunicationService {
 
   constructor() {}
 
+  /**
+   * claims scale pipes
+   * highest level connect function
+   */
   init(): Promise<ConnectResponse> {
     // TODO: handle when only 1 pipe connects
     if (this.isConnected) {
@@ -31,6 +36,10 @@ class ScaleCommunicationService {
       .toPromise();
   }
 
+  /**
+   * disconnects from pipes
+   * highest level disconnect func
+   */
   destroy() {
     if (this.isConnected) {
       this.input_pipe.disconnect();
@@ -38,6 +47,9 @@ class ScaleCommunicationService {
     }
   }
 
+  /**
+   * getter for connection state (both pipes)
+   */
   get isConnected() {
     const initialized = Boolean(this.input_pipe && this.output_pipe);
     return (
@@ -47,10 +59,15 @@ class ScaleCommunicationService {
     );
   }
 
+  /**
+   * send a request to scale and awaits for the response
+   * async, returns promise
+   * @param buffer - data to be sent
+   */
   private requestScale(buffer: Buffer): Promise<Buffer> {
     return new Promise(resolve => {
       const dataSub = this.output_pipe.data$.subscribe(response => {
-        console.log(response);
+        console.log('SCALE RESPONSE =>', response);
         dataSub.unsubscribe();
         resolve(response);
       });
@@ -58,25 +75,61 @@ class ScaleCommunicationService {
     });
   }
 
+  /**
+   * send a request for current weight without any handles
+   */
   private async requestCurrentWeight(): Promise<Buffer> {
     const { EOT, ENQ } = _b;
     const buf = Buffer.from([EOT, ENQ]);
     return this.requestScale(buf);
   }
 
+  /**
+   * when nak is received we need to ask scale what's wrong,
+   * so this function does this
+   */
   private async requestNakExplanation(): Promise<Buffer> {
     const { EOT, STX, D0, D8, ETX } = _b;
     const buf = Buffer.from([EOT, STX, D0, D8, ETX]);
     return this.requestScale(buf);
   }
 
+  /**
+   * get current weight with nak handle
+   * returns valid, human-readable response
+   */
   async getWeight() {
     const weight = await this.requestCurrentWeight();
     if (BufferTranslator.isNak(weight)) {
       const why = await this.requestNakExplanation();
       throw BufferTranslator.parseNakReason(why);
     } else {
-      return BufferTranslator.parseValidWeight(weight)
+      return BufferTranslator.parseValidWeight(weight);
+    }
+  }
+
+  /**
+   * send settings to scale and check response
+   */
+  async setSettings(settings: ValidatedSettings): Promise<boolean> {
+    const scaleSettings: Settings = {
+      description_text: settings.description_text as string,
+      tare: ScaleTranslator.translateFloatToString(settings.tare as number, 3, 4),
+      unit_price: ScaleTranslator.translateFloatToString(settings.unit_price as number, 2, 6),
+    };
+    const scaleResp = await this.requestScale(
+      BufferTranslator.createSettingsRequest(scaleSettings),
+    );
+    if (BufferTranslator.isNak(scaleResp)) {
+      const why = await this.requestNakExplanation();
+      throw BufferTranslator.parseNakReason(why);
+    }
+    if (BufferTranslator.isAck(scaleResp)) {
+      return true;
+    } else {
+      console.log('Unknown resp');
+      console.log(scaleResp);
+      return false;
     }
   }
 }

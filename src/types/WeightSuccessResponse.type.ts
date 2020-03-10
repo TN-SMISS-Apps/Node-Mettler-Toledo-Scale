@@ -1,6 +1,6 @@
 export type WeightSuccessResponse = {
   scale_status: string;
-  weight: string;
-  unit_price: string
-  selling_price: string
+  weight: number;
+  unit_price: number
+  selling_price: number
 }
