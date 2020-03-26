@@ -25,8 +25,12 @@ class ScaleCommunicationService {
     }
     this.input_pipe = new Pipe(IN_PIPE_PATH);
     this.input_pipe.connect();
-    this.output_pipe = new Pipe(OUT_PIPE_PATH);
-    this.output_pipe.connect();
+      if(IN_PIPE_PATH !== OUT_PIPE_PATH) {
+        this.output_pipe = new Pipe(OUT_PIPE_PATH);
+        this.output_pipe.connect();
+      } else {
+        this.output_pipe = this.input_pipe
+      }
 
     return forkJoin({
       input: merge(this.input_pipe.errors$, this.input_pipe.is_connected$).pipe(first(v => !!v)),
