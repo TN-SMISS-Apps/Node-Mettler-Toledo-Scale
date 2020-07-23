@@ -13,4 +13,5 @@ app.use('/', router);
 
 app.listen(PORT, () => {
   console.log('Listening on', PORT);
+  console.log('version', '1.0.0');
 });

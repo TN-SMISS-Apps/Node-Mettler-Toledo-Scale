@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "nodemon src/index.ts",
+    "build": "tsc && pkg ./dist/index.js --out-path release"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
+    "pkg": "^4.4.9",
     "rxjs": "^6.5.4"
   },
   "devDependencies": {
