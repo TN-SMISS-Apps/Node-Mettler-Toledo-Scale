@@ -1,5 +1,5 @@
 import { _b } from '../utils/bytesConvertion';
-import {ScaleTranslator} from './ScaleTranslator'
+import { ScaleTranslator } from './ScaleTranslator';
 import { BadRequestError, WeightSuccessResponse, Settings } from '../types';
 
 export class BufferTranslator {
@@ -15,6 +15,21 @@ export class BufferTranslator {
    */
   static isAck(buf: Buffer): boolean {
     return buf.equals(Buffer.from([_b.ACK]));
+  }
+
+  /**
+   * checks if provided buffer is ACK (acknowledgement)
+   */
+  static isChecksumRequired(buf: Buffer): boolean {
+    return Buffer.from(buf).includes(Buffer.from([_b.STX, _b.D1, _b.D1, _b.ESC, _b.D2]));
+  }
+
+  /**
+   * checks if provided buffer is ACK (acknowledgement)
+   */
+  static parseChecksumRotations(buf: Buffer): [number, number] {
+    const rotations = Buffer.from(buf).slice(5, 7);
+    return [rotations[0], rotations[1]];
   }
 
   /**
@@ -94,7 +109,7 @@ export class BufferTranslator {
     const weight = b_weight.toString('utf8');
     const unit_price = b_unit_price.toString('utf8');
     const selling_price = b_selling_price.toString('utf8');
-    // TODO: to normal values 
+    // TODO: to normal values
     return {
       scale_status,
       weight: ScaleTranslator.translateStringToFloat(weight, 3),
@@ -118,5 +133,21 @@ export class BufferTranslator {
 
     const end = Buffer.from([_b.ETX]);
     return Buffer.concat([start, esc, unit_price, esc, tare, esc, text, end]);
+  }
+
+  //
+
+  rotateLeft(bits: number) {
+    const value = 18193;
+    const temp1 = value << bits;
+    const temp2 = (value & 0xffff) >> (16 - bits);
+    return Buffer.from(((temp1 | temp2) & 0xffff).toString(16).toUpperCase());
+  }
+
+  rotateRight(bits: number) {
+    const value = -3274;
+    const temp1 = (value & 0xffff) >> bits;
+    const temp2 = value << (16 - bits);
+    return Buffer.from(((temp1 | temp2) & 0xffff).toString(16).toUpperCase());
   }
 }

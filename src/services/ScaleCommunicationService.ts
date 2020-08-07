@@ -25,18 +25,20 @@ class ScaleCommunicationService {
     }
     this.input_pipe = new Pipe(IN_PIPE_PATH);
     this.input_pipe.connect();
-      if(IN_PIPE_PATH !== OUT_PIPE_PATH) {
-        this.output_pipe = new Pipe(OUT_PIPE_PATH);
-        this.output_pipe.connect();
-      } else {
-        this.output_pipe = this.input_pipe
-      }
+    if (IN_PIPE_PATH !== OUT_PIPE_PATH) {
+      this.output_pipe = new Pipe(OUT_PIPE_PATH);
+      this.output_pipe.connect();
+    } else {
+      this.output_pipe = this.input_pipe;
+    }
 
     return forkJoin({
-      input: merge(this.input_pipe.errors$, this.input_pipe.is_connected$).pipe(first(v => !!v)),
-      output: merge(this.output_pipe.errors$, this.output_pipe.is_connected$).pipe(first(v => !!v)),
+      input: merge(this.input_pipe.errors$, this.input_pipe.is_connected$).pipe(first((v) => !!v)),
+      output: merge(this.output_pipe.errors$, this.output_pipe.is_connected$).pipe(
+        first((v) => !!v),
+      ),
     })
-      .pipe(first(v => !!v))
+      .pipe(first((v) => !!v))
       .toPromise();
   }
 
@@ -68,15 +70,44 @@ class ScaleCommunicationService {
    * async, returns promise
    * @param buffer - data to be sent
    */
-  private requestScale(buffer: Buffer): Promise<Buffer> {
-    return new Promise(resolve => {
-      const dataSub = this.output_pipe.data$.subscribe(response => {
+  private performRawRequest(buffer: Buffer): Promise<Buffer> {
+    return new Promise((resolve) => {
+      const dataSub = this.output_pipe.data$.subscribe((response) => {
         console.log('SCALE RESPONSE =>', response);
         dataSub.unsubscribe();
         resolve(response);
       });
       this.input_pipe.socket.write(buffer);
     });
+  }
+
+  /**
+   * send a request to scale and awaits for the response
+   * async, returns promise
+   * @param buffer - data to be sent
+   */
+  private async requestScale(buffer: Buffer): Promise<Buffer> {
+    const scaleResp = await this.requestScale(buffer);
+    if (BufferTranslator.isChecksumRequired(scaleResp)) {
+      //
+      // const
+    } else {
+      return scaleResp;
+    }
+    // const scaleResp = await this.requestScale(
+    //   BufferTranslator.createSettingsRequest(scaleSettings),
+    // );
+    // if (BufferTranslator.isNak(scaleResp)) {
+    //   const why = await this.requestNakExplanation();
+    //   throw BufferTranslator.parseNakReason(why);
+    // }
+    // if (BufferTranslator.isAck(scaleResp)) {
+    //   return true;
+    // } else {
+    //   console.log('Unknown resp');
+    //   console.log(scaleResp);
+    //   return false;
+    // }
   }
 
   /**
