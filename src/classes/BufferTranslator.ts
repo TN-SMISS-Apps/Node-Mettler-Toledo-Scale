@@ -29,7 +29,9 @@ export class BufferTranslator {
    */
   static parseChecksumRotations(buf: Buffer): [number, number] {
     const rotations = Buffer.from(buf).slice(5, 7);
-    return [rotations[0], rotations[1]];
+    const left = Number('0x' + String.fromCharCode(rotations[0]));
+    const right = Number('0x' + String.fromCharCode(rotations[1]));
+    return [left, right];
   }
 
   /**

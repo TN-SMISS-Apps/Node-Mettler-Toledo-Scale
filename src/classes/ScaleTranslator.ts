@@ -25,8 +25,12 @@ export class ScaleTranslator {
    */
   static translateFloatToString(num: number, precision: number, length: number): string {
     let k = num.toString().split('.');
-    k[1] = k[1].padEnd(precision, '0');
-    k[0] = k[0].padStart(length - precision, '0');
-    return k.join('');
+    if (k[1]) {
+      k[1] = k[1].padEnd(precision, '0');
+      k[0] = k[0].padStart(length - precision, '0');
+      return k.join('');
+    } else {
+      return k[0].padEnd(precision + 1, '0');
+    }
   }
 }

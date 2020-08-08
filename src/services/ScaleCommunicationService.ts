@@ -77,7 +77,8 @@ class ScaleCommunicationService {
         dataSub.unsubscribe();
         resolve(response);
       });
-      this.input_pipe.socket.write(buffer);
+        console.log('SCALE REQ =>', buffer);
+        this.input_pipe.socket.write(buffer);
     });
   }
 
@@ -96,7 +97,7 @@ class ScaleCommunicationService {
         BufferTranslator.rotateRight(right),
       ]);
       const prefix = Buffer.from([_b.EOT, _b.STX, _b.D1, _b.D0, _b.ESC]);
-      const suffix = Buffer.from([_b.STX]);
+      const suffix = Buffer.from([_b.ETX]);
       await this.performRawRequest(Buffer.concat([prefix, checksum, suffix]));
       const response = await this.performRawRequest(Buffer.from([_b.EOT, _b.ENQ]));
       const isChecksumValid = response.slice(4, 5).equals(Buffer.from([0x31]));
@@ -105,6 +106,7 @@ class ScaleCommunicationService {
         console.log('checksum send => ', checksum);
         throw new Error('checksum incorrect');
       } else {
+        console.log('checksum ok');
         return this.performRawRequest(request);
       }
       // if ok send initial, return resp

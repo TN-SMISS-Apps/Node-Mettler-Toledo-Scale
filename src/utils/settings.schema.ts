@@ -5,7 +5,7 @@ export const SettingSchema = Joi.object({
   tare: Joi.number()
     .precision(3)
     .min(0)
-    .max(9.999)
+    .max(5.999)
     .required(),
   unit_price: Joi.number()
     .precision(2)
