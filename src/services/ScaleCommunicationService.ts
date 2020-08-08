@@ -86,28 +86,31 @@ class ScaleCommunicationService {
    * async, returns promise
    * @param buffer - data to be sent
    */
-  private async requestScale(buffer: Buffer): Promise<Buffer> {
-    const scaleResp = await this.requestScale(buffer);
+  private async requestScale(request: Buffer): Promise<Buffer> {
+    const scaleResp = await this.performRawRequest(request);
+    // handle checksum
     if (BufferTranslator.isChecksumRequired(scaleResp)) {
-      //
-      // const
+      const [left, right] = BufferTranslator.parseChecksumRotations(scaleResp);
+      const checksum = Buffer.concat([
+        BufferTranslator.rotateLeft(left),
+        BufferTranslator.rotateRight(right),
+      ]);
+      const prefix = Buffer.from([_b.EOT, _b.STX, _b.D1, _b.D0, _b.ESC]);
+      const suffix = Buffer.from([_b.STX]);
+      await this.performRawRequest(Buffer.concat([prefix, checksum, suffix]));
+      const response = await this.performRawRequest(Buffer.from([_b.EOT, _b.ENQ]));
+      const isChecksumValid = response.slice(4, 5).equals(Buffer.from([0x31]));
+      if (!isChecksumValid) {
+        console.log('checksum requested => ', scaleResp);
+        console.log('checksum send => ', checksum);
+        throw new Error('checksum incorrect');
+      } else {
+        return this.performRawRequest(request);
+      }
+      // if ok send initial, return resp
     } else {
       return scaleResp;
     }
-    // const scaleResp = await this.requestScale(
-    //   BufferTranslator.createSettingsRequest(scaleSettings),
-    // );
-    // if (BufferTranslator.isNak(scaleResp)) {
-    //   const why = await this.requestNakExplanation();
-    //   throw BufferTranslator.parseNakReason(why);
-    // }
-    // if (BufferTranslator.isAck(scaleResp)) {
-    //   return true;
-    // } else {
-    //   console.log('Unknown resp');
-    //   console.log(scaleResp);
-    //   return false;
-    // }
   }
 
   /**

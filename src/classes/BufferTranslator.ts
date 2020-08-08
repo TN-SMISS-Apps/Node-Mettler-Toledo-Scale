@@ -18,14 +18,14 @@ export class BufferTranslator {
   }
 
   /**
-   * checks if provided buffer is ACK (acknowledgement)
+   * checks if provided buffer is checksum request
    */
   static isChecksumRequired(buf: Buffer): boolean {
     return Buffer.from(buf).includes(Buffer.from([_b.STX, _b.D1, _b.D1, _b.ESC, _b.D2]));
   }
 
   /**
-   * checks if provided buffer is ACK (acknowledgement)
+   * get Z values (left\right rotations) from checksum request
    */
   static parseChecksumRotations(buf: Buffer): [number, number] {
     const rotations = Buffer.from(buf).slice(5, 7);
@@ -135,17 +135,23 @@ export class BufferTranslator {
     return Buffer.concat([start, esc, unit_price, esc, tare, esc, text, end]);
   }
 
-  //
-
-  rotateLeft(bits: number) {
-    const value = 18193;
+  /**
+   * rotates fixed checksum value
+   * @param bits rotation turns
+   */
+  static rotateLeft(bits: number) {
+    const value = 0x4711;
     const temp1 = value << bits;
     const temp2 = (value & 0xffff) >> (16 - bits);
     return Buffer.from(((temp1 | temp2) & 0xffff).toString(16).toUpperCase());
   }
 
-  rotateRight(bits: number) {
-    const value = -3274;
+  /**
+   * rotates fixed checksum value
+   * @param bits rotation turns
+   */
+  static rotateRight(bits: number) {
+    const value = 0xf336;
     const temp1 = (value & 0xffff) >> bits;
     const temp2 = value << (16 - bits);
     return Buffer.from(((temp1 | temp2) & 0xffff).toString(16).toUpperCase());
