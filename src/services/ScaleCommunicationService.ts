@@ -3,9 +3,15 @@ import { Pipe } from '../classes/Pipe';
 import { _b } from '../utils/bytesConvertion';
 import { merge, forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { ConnectResponse, ValidatedSettings, Settings } from '../types';
 import { BufferTranslator } from '../classes/BufferTranslator';
 import { ScaleTranslator } from '../classes/ScaleTranslator';
+import {
+  ConnectResponse,
+  ValidatedSettings,
+  Settings,
+  WeightSuccessResponseWithReceiptInfo,
+} from '../types';
+import { printReceipt } from '../utils/printer';
 
 // handles
 class ScaleCommunicationService {
@@ -77,8 +83,8 @@ class ScaleCommunicationService {
         dataSub.unsubscribe();
         resolve(response);
       });
-        console.log('SCALE REQ =>', buffer);
-        this.input_pipe.socket.write(buffer);
+      console.log('SCALE REQ =>', buffer);
+      this.input_pipe.socket.write(buffer);
     });
   }
 
@@ -138,13 +144,22 @@ class ScaleCommunicationService {
    * get current weight with nak handle
    * returns valid, human-readable response
    */
-  async getWeight() {
+  async getWeight(): Promise<WeightSuccessResponseWithReceiptInfo> {
     const weight = await this.requestCurrentWeight();
     if (BufferTranslator.isNak(weight)) {
       const why = await this.requestNakExplanation();
       throw BufferTranslator.parseNakReason(why);
     } else {
-      return BufferTranslator.parseValidWeight(weight);
+      const parsedWeight = BufferTranslator.parseValidWeight(weight);
+      let errors;
+      try {
+        const jobId = await printReceipt(parsedWeight);
+        console.log('receipt is prinitng. Printer job id =>', jobId);
+      } catch (error) {
+        console.log('printing failed:', error);
+        errors = error;
+      }
+      return { ...parsedWeight, receipt_printed: Boolean(errors), receipt_print_errors: errors };
     }
   }
 

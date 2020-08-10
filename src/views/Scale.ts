@@ -1,6 +1,6 @@
 import { RequestHandler, Router } from 'express';
 import { scaleCommunicationService } from '../services/ScaleCommunicationService';
-import { BadRequestError, WeightSuccessResponse } from '../types';
+import { BadRequestError, WeightSuccessResponseWithReceiptInfo } from '../types';
 import { SettingSchema } from '../utils/settings.schema';
 
 export const scaleRouter = Router();
@@ -25,11 +25,11 @@ const SettingsView: RequestHandler = async (req, res) => {
       error_code: 'VALIDATION',
       error: { ...data.error, ...data.errors },
     };
-    res.send(err)
+    res.send(err);
   } else {
     scaleCommunicationService
       .setSettings(data.value)
-      .then(_ => res.sendStatus(200))
+      .then((_) => res.sendStatus(200))
       .catch((err: BadRequestError) => {
         res.status(409).send(err);
       });
@@ -39,7 +39,7 @@ const SettingsView: RequestHandler = async (req, res) => {
 const WeightView: RequestHandler = async (_, res) => {
   scaleCommunicationService
     .getWeight()
-    .then((resp: WeightSuccessResponse) => res.send(resp))
+    .then((resp: WeightSuccessResponseWithReceiptInfo) => res.send(resp))
     .catch((err: BadRequestError) => {
       res.status(409).send(err);
     });
