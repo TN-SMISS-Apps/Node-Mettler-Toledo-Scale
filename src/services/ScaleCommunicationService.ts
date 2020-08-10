@@ -159,7 +159,7 @@ class ScaleCommunicationService {
         console.log('printing failed:', error);
         errors = error;
       }
-      return { ...parsedWeight, receipt_printed: Boolean(errors), receipt_print_errors: errors };
+      return { ...parsedWeight, receipt_printed: !Boolean(errors), receipt_print_errors: errors };
     }
   }
 

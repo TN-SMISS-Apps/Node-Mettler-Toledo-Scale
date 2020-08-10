@@ -10,12 +10,19 @@ const nodePrinter = require('@thiagoelg/node-printer');
 
 export const printReceipt = (weight: WeightSuccessResponse) => {
   return printText(
-    `=====================
+    `
+    
+=====================
+
 Weight:        ${weight.weight};
 Unit price:    ${weight.unit_price};
 
 Total price:   ${weight.selling_price};
-=====================`,
+
+=====================
+
+
+`,
   );
 };
 
