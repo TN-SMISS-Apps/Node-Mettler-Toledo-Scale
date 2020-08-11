@@ -1,4 +1,5 @@
 import { WeightSuccessResponse } from '../types';
+const iconv = require('iconv-lite');
 
 const nodePrinter = require('@thiagoelg/node-printer');
 
@@ -9,21 +10,13 @@ const nodePrinter = require('@thiagoelg/node-printer');
 // };
 
 export const printReceipt = (weight: WeightSuccessResponse) => {
-  return printText(
-    `
-    
-=====================
-
-Weight:        ${weight.weight};
-Unit price:    ${weight.unit_price};
-
-Total price:   ${weight.selling_price};
-
-=====================
-
-
-`,
-  );
+  const text = `
+Grundpreis:            ${weight.unit_price} € / 1kg;
+Gewogenes Gewicht:     ${weight.weight} kg;
+Preis:                 ${weight.selling_price} €;
+  
+  `;
+  return printText(iconv.encode(text, 'win1251'));
 };
 
 const printText = async (text: string) => {
@@ -35,10 +28,3 @@ const printText = async (text: string) => {
     });
   });
 };
-
-// (async () => {
-//   const data =  "some text some text some text some text some textsome textsome textv v some text some text some text some text some textsome textsome textsome text"
-//   printText(data)
-//     .then((job) => console.log('success, jobid =>', job))
-//     .catch(console.log);
-// })();
