@@ -1,8 +1,8 @@
 import { OUT_PIPE_PATH, IN_PIPE_PATH } from '../config';
 import { Pipe } from '../classes/Pipe';
 import { _b } from '../utils/bytesConvertion';
-import { merge, forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { merge, forkJoin, of } from 'rxjs';
+import { first, timeout, catchError } from 'rxjs/operators';
 import { BufferTranslator } from '../classes/BufferTranslator';
 import { ScaleTranslator } from '../classes/ScaleTranslator';
 import {
@@ -78,11 +78,19 @@ class ScaleCommunicationService {
    */
   private performRawRequest(buffer: Buffer): Promise<Buffer> {
     return new Promise((resolve) => {
-      const dataSub = this.output_pipe.data$.subscribe((response) => {
-        console.log('SCALE RESPONSE =>', response);
-        dataSub.unsubscribe();
-        resolve(response);
-      });
+      const dataSub = this.output_pipe.data$
+        .pipe(
+          timeout(1000),
+          catchError((_) => {
+            console.log('request timeout');
+            return of(Buffer.from([_b.NAK]));
+          }),
+        )
+        .subscribe((response) => {
+          console.log('SCALE RESPONSE =>', response);
+          dataSub.unsubscribe();
+          resolve(response);
+        });
       console.log('SCALE REQ =>', buffer);
       this.input_pipe.socket.write(buffer);
     });
