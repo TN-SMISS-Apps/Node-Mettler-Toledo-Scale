@@ -1,6 +1,4 @@
 import { WeightSuccessResponse } from '../types';
-const iconv = require('iconv-lite');
-
 const nodePrinter = require('@thiagoelg/node-printer');
 
 // const findPrinter = () => {
@@ -11,12 +9,12 @@ const nodePrinter = require('@thiagoelg/node-printer');
 
 export const printReceipt = (weight: WeightSuccessResponse) => {
   const text = `
-Grundpreis:            ${weight.unit_price} € / 1kg;
+Grundpreis:            ${weight.unit_price} EUR / 1kg;
 Gewogenes Gewicht:     ${weight.weight} kg;
-Preis:                 ${weight.selling_price} €;
+Preis:                 ${weight.selling_price} EUR;
   
   `;
-  return printText(iconv.encode(text, 'win1251'));
+  return printText(text);
 };
 
 const printText = async (text: string) => {

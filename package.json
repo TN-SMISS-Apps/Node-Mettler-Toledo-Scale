@@ -15,7 +15,6 @@
     "@thiagoelg/node-printer": "^0.5.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "iconv-lite": "^0.6.2",
     "morgan": "^1.9.1",
     "pkg": "^4.4.9",
     "rxjs": "^6.5.4"
