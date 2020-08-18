@@ -1,11 +1,17 @@
 import { WeightSuccessResponse } from '../types';
-const nodePrinter = require('@thiagoelg/node-printer');
 
-// const findPrinter = () => {
-//   return nodePrinter
-//     .getPrinters()
-//     .find((printer: any) => printer.portName && printer.portName.includes('USBPOS'));
-// };
+let nodePrinter: any;
+
+try {
+  nodePrinter = require('@thiagoelg/node-printer');
+} catch (error) {
+  console.log('node printer error');
+  console.log(error);
+  // stub
+  nodePrinter = {
+    printDirect: (options: any) => console.log(options),
+  };
+}
 
 export const printReceipt = (weight: WeightSuccessResponse) => {
   const text = `

@@ -3,9 +3,10 @@
   "version": "3.0.0",
   "description": "",
   "main": "index.js",
+  "bin": "./dist/index.js",
   "scripts": {
     "start": "nodemon src/index.ts",
-    "build": "tsc && pkg ./dist/index.js --out-path release"
+    "build": "pkg . --target win --out-path release"
   },
   "keywords": [],
   "author": "",
@@ -13,9 +14,11 @@
   "dependencies": {
     "@hapi/joi": "^17.1.0",
     "@thiagoelg/node-printer": "^0.5.3",
+    "@types/multer": "^1.4.4",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
+    "multer": "^1.4.2",
     "pkg": "^4.4.9",
     "rxjs": "^6.5.4"
   },
@@ -28,5 +31,9 @@
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
+  },
+  "pkg": {
+    "assets": "node_printer.node",
+    "build": "./dist/index.js"
   }
 }
