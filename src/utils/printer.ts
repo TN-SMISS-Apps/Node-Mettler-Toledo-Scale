@@ -1,16 +1,18 @@
 import { WeightSuccessResponse } from '../types';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import bwipjs from 'bwip-js';
 import ejs from 'ejs';
 import { log } from '../utils/logger';
+import { join } from 'path';
 
 export const printReceipt = async (
   weight: WeightSuccessResponse,
   shouldPrintAdditionalText = true,
 ) => {
   // const barcode = await generateBarcode({ scale: 2 });
+  log(app.getAppPath());
   ejs.renderFile(
-    'dist/templates/receipt.ejs',
+    join(app.getAppPath(), 'dist/templates/receipt.ejs'),
     { ...weight, shouldPrintAdditionalText },
     (err, data) => {
       if (err) {

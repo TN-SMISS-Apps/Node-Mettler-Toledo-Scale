@@ -10,7 +10,7 @@
     "watch": "tsc -w",
     "compile": "tsc",
     "copy": "copyfiles -f src/templates/* dist/templates",
-    "build": "electron-packager . --out release"
+    "build": "electron-packager . --out release --overwrite"
   },
   "keywords": [],
   "author": "",
