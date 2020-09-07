@@ -10,7 +10,6 @@ export const printReceipt = async (
   shouldPrintAdditionalText = true,
 ) => {
   // const barcode = await generateBarcode({ scale: 2 });
-  log(app.getAppPath());
   ejs.renderFile(
     join(app.getAppPath(), 'dist/templates/receipt.ejs'),
     { ...weight, shouldPrintAdditionalText },

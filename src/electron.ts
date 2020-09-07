@@ -23,14 +23,14 @@ function createWindow() {
   // TODO: path?
   mainWindow!.loadFile('dist/templates/electron.html');
 
-  const exampleWeightResponse = {
-    scale_status: '',
-    selling_price: 0.75,
-    unit_price: 4.22,
-    weight: 0.178,
-  };
+  // const exampleWeightResponse = {
+  //   scale_status: '',
+  //   selling_price: 0.75,
+  //   unit_price: 4.22,
+  //   weight: 0.178,
+  // };
 
-  printReceipt(exampleWeightResponse, true)
+  // printReceipt(exampleWeightResponse, true)
 
   mainWindow!.on('closed', function () {
     mainWindow = null;
