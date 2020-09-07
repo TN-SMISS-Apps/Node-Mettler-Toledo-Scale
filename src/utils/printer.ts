@@ -6,7 +6,7 @@ import { log } from '../utils/logger';
 
 export const printReceipt = async (
   weight: WeightSuccessResponse,
-  shouldPrintAdditionalText = false,
+  shouldPrintAdditionalText = true,
 ) => {
   // const barcode = await generateBarcode({ scale: 2 });
   ejs.renderFile(
