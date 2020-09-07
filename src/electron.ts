@@ -5,8 +5,8 @@ import { printReceipt } from './utils/printer';
 
 function createWindow() {
   let win: BrowserWindow | null = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 400,
+    height: 400,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -19,17 +19,6 @@ function createWindow() {
 
   // TODO: path?
   win.loadFile('dist/templates/electron.html');
-  // win.hide();
-
-  const exampleWeightResponse = {
-    scale_status: '',
-    selling_price: 0.75,
-    unit_price: 4.22,
-    weight: 0.178,
-  };
-  
-  printReceipt(exampleWeightResponse)
-
 
   win.on('closed', function () {
     win = null;

@@ -9,7 +9,7 @@
         font-size: 12px;
         font-family: 'Arial';
       }
-      body, p {
+      body {
         margin: 0;
       }
       .row {
@@ -24,9 +24,6 @@
       }
       img {
         margin-top: 8px;
-      }
-      .additionalText {
-        font-size: 9px;
       }
     </style>
   </head>
@@ -48,18 +45,8 @@
       <span class="value"><%= selling_price %> € </span>
     </div>
 
-
-    <% if (shouldPrintAdditionalText) { %>
-      <br>
-      <div class="additionalText">
-        <p>VCODisp</p>
-        <p>Version: 1.00.00</p>
-        <p>CRC: 5FD93A76</p>
-        <p>Mettler - Toledo (Albstadt) GmbH</p>
-        <p>TC7285</p>
-        <p>Version number Dialog 06: d93-09-104 01</p>
-      </div>
-    <% } %>
-
+    <div class="imageWrap">
+      <img src="<%= barcode %>" />
+    </div>
   </body>
 </html>
