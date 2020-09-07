@@ -1,12 +1,13 @@
 {
   "name": "node-mettler-toledo",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/electron.js",
   "bin": "./dist/index.js",
   "scripts": {
-    "start": "nodemon src/index.ts",
-    "build": "pkg . --target win --out-path release"
+    "start": "npm run copy & electron .",
+    "watch": "tsc -w",
+    "copy": "copyfiles -f src/templates/* dist/templates"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,9 @@
     "@thiagoelg/node-printer": "^0.5.3",
     "@types/multer": "^1.4.4",
     "body-parser": "^1.19.0",
+    "bwip-js": "^1.7.3",
+    "copyfiles": "^2.3.0",
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
@@ -23,11 +27,16 @@
     "rxjs": "^6.5.4"
   },
   "devDependencies": {
-    "@types/morgan": "^1.9.0",
     "@types/body-parser": "^1.19.0",
+    "@types/bwip-js": "^1.7.0",
+    "@types/ejs": "^3.0.4",
+    "@types/electron": "^1.6.10",
     "@types/express": "^4.17.3",
     "@types/hapi__joi": "^16.0.12",
+    "@types/morgan": "^1.9.0",
     "@types/node": "^13.9.0",
+    "electron": "^10.1.1",
+    "electron-packager": "^15.1.0",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3"

@@ -161,8 +161,7 @@ class ScaleCommunicationService {
       const parsedWeight = BufferTranslator.parseValidWeight(weight);
       let errors;
       try {
-        const jobId = await printReceipt(parsedWeight);
-        console.log('receipt is prinitng. Printer job id =>', jobId);
+        await printReceipt(parsedWeight);
       } catch (error) {
         console.log('printing failed:', error);
         errors = error;
