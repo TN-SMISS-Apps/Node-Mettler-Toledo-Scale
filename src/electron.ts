@@ -1,12 +1,15 @@
 import { app, BrowserWindow } from 'electron';
 import { app as expressApp } from './server';
 import { PORT } from './config';
-import { printReceipt } from './utils/printer';
+// import { printReceipt } from './utils/printer';
+import { log } from './utils/logger';
+
+export let mainWindow: BrowserWindow | null;
 
 function createWindow() {
-  let win: BrowserWindow | null = new BrowserWindow({
-    width: 400,
-    height: 400,
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -18,13 +21,21 @@ function createWindow() {
   });
 
   // TODO: path?
-  win.loadFile('dist/templates/electron.html');
+  mainWindow!.loadFile('dist/templates/electron.html');
 
-  win.on('closed', function () {
-    win = null;
+  // const exampleWeightResponse = {
+  //   scale_status: '',
+  //   selling_price: 0.75,
+  //   unit_price: 4.22,
+  //   weight: 0.178,
+  // };
+
+  // printReceipt(exampleWeightResponse, true)
+
+  mainWindow!.on('closed', function () {
+    mainWindow = null;
     app.quit();
   });
 }
-
 
 app.whenReady().then(createWindow);

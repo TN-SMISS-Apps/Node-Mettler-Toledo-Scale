@@ -4,16 +4,59 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mettler - Toledo Middleware</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <style>
+      .logs {
+        background-color: #f8f9fa;
+        height: 100vh;
+        overflow: auto;
+      }
+      .about {
+        padding: 8px;
+      }
+      code {
+        padding: 8px;
+      }
+    </style>
   </head>
   <body>
-    <p>Listening on port 3000</p>
-    <p>version 4.0.0</p>
-    <br>
-    <p>VCODisp</p>
-    <p>Version: 1.00.00</p>
-    <p>CRC: 5FD93A76</p>
-    <p>Mettler - Toledo (Albstadt) GmbH</p>
-    <p>TC7285</p>
-    <p>Version number Dialog 06: d93-09-104 01</p>
+    <div class="layout d-flex">
+      <div class="logs d-flex flex-column w-50" id="logs">
+        <code>Logs will be located here:</code>
+      </div>
+      <div class="about">
+        <p>Listening on port 3000</p>
+        <p>version 4.0.0</p>
+        <br />
+        <p>VCODisp</p>
+        <p>Version: 1.00.00</p>
+        <p>CRC: 5FD93A76</p>
+        <p>Mettler - Toledo (Albstadt) GmbH</p>
+        <p>TC7285</p>
+        <p>Version number Dialog 06: d93-09-104 01</p>
+      </div>
+    </div>
+
+    <script>
+      const { ipcRenderer } = require('electron')
+      console.log(ipcRenderer)
+      const logsContainer = document.getElementById('logs')
+      ipcRenderer.on('log', (event, data) => {
+        console.log("HERERER")
+        const log = document.createElement('code')
+        log.innerHTML = data
+        logsContainer.appendChild(log)
+      })
+
+      require('electron').ipcRenderer.on('ping', (event, message) => {
+        console.log(message) // Prints 'whoooooooh!'
+      })
+
+    </script>
   </body>
 </html>

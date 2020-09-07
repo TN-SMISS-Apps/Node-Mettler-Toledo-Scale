@@ -2,6 +2,7 @@ import { WeightSuccessResponse } from '../types';
 import { BrowserWindow } from 'electron';
 import bwipjs from 'bwip-js';
 import ejs from 'ejs';
+import { log } from '../utils/logger';
 
 export const printReceipt = async (
   weight: WeightSuccessResponse,
@@ -13,7 +14,7 @@ export const printReceipt = async (
     { ...weight, shouldPrintAdditionalText },
     (err, data) => {
       if (err) {
-        console.log(err);
+        log(err);
       }
       const workerWindow: BrowserWindow | undefined = new BrowserWindow({ show: false });
       workerWindow.loadURL('data:text/html;charset=utf-8,' + encodeURI(data));
@@ -21,8 +22,8 @@ export const printReceipt = async (
         workerWindow.webContents.print(
           { silent: true, margins: { marginType: 'none' } },
           (success, err) => {
-            if (success) console.log('success');
-            if (err) console.log('err', err);
+            if (success) log('success');
+            if (err) log('err', err);
             workerWindow.close();
           },
         );
@@ -45,7 +46,7 @@ function generateBarcode({ text = '123456789012', scale = 1, height = 10 }) {
       (err, buffer) => {
         if (err) {
           reject(err);
-          console.log(err);
+          log(err);
         } else {
           resolve('data:image/png;base64,' + buffer.toString('base64'));
         }

@@ -12,6 +12,7 @@ import {
   WeightSuccessResponseWithReceiptInfo,
 } from '../types';
 import { printReceipt } from '../utils/printer';
+import { log } from '../utils/logger';
 
 // handles
 class ScaleCommunicationService {
@@ -82,16 +83,16 @@ class ScaleCommunicationService {
         .pipe(
           timeout(1000),
           catchError((_) => {
-            console.log('request timeout');
+            log('request timeout');
             return of(Buffer.from([_b.NAK]));
           }),
         )
         .subscribe((response) => {
-          console.log('SCALE RESPONSE =>', response);
+          log('SCALE RESPONSE =>', response);
           dataSub.unsubscribe();
           resolve(response);
         });
-      console.log('SCALE REQ =>', buffer);
+      log('SCALE REQ =>', buffer);
       this.input_pipe.socket.write(buffer);
     });
   }
@@ -116,11 +117,11 @@ class ScaleCommunicationService {
       const response = await this.performRawRequest(Buffer.from([_b.EOT, _b.ENQ]));
       const isChecksumValid = response.slice(4, 5).equals(Buffer.from([0x31]));
       if (!isChecksumValid) {
-        console.log('checksum requested => ', scaleResp);
-        console.log('checksum send => ', checksum);
+        log('checksum requested => ', scaleResp);
+        log('checksum send => ', checksum);
         throw new Error('checksum incorrect');
       } else {
-        console.log('checksum ok');
+        log('checksum ok');
         return this.performRawRequest(request);
       }
       // if ok send initial, return resp
@@ -163,7 +164,7 @@ class ScaleCommunicationService {
       try {
         await printReceipt(parsedWeight);
       } catch (error) {
-        console.log('printing failed:', error);
+        log('printing failed:', error);
         errors = error;
       }
       return { ...parsedWeight, receipt_printed: !Boolean(errors), receipt_print_errors: errors };
@@ -189,8 +190,8 @@ class ScaleCommunicationService {
     if (BufferTranslator.isAck(scaleResp)) {
       return true;
     } else {
-      console.log('Unknown resp');
-      console.log(scaleResp);
+      log('Unknown resp');
+      log(scaleResp);
       return false;
     }
   }

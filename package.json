@@ -3,11 +3,14 @@
   "version": "4.0.0",
   "description": "",
   "main": "dist/electron.js",
+  "productName": "node-mt-middleware",
   "bin": "./dist/index.js",
   "scripts": {
     "start": "npm run copy & electron .",
     "watch": "tsc -w",
-    "copy": "copyfiles -f src/templates/* dist/templates"
+    "compile": "tsc",
+    "copy": "copyfiles -f src/templates/* dist/templates",
+    "build": "electron-packager . --out release"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +39,7 @@
     "@types/morgan": "^1.9.0",
     "@types/node": "^13.9.0",
     "electron": "^9.3.0",
+    "electron-packager": "^15.1.0",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
