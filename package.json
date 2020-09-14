@@ -43,7 +43,8 @@
     "electron-packager": "^15.1.0",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "dot-prop": ">=4.2.1"
   },
   "pkg": {
     "assets": "node_printer.node",
