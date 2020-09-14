@@ -37,7 +37,7 @@ export const _b = {
   SPACE: 0x20, // 32
   BANG: 0x21, // 33
   DOUBLE_QUOTE: 0x22, // 34
-  // 👇 48 - 57
+  // 👇 48 - 57 digits 0-9
   D0: 0x30, 
   D1: 0x31,
   D2: 0x32,
@@ -48,4 +48,11 @@ export const _b = {
   D7: 0x37,
   D8: 0x38,
   D9: 0x39,
+  // letters A-F
+  A: 0x41,
+  B: 0x42,
+  C: 0x43,
+  D: 0x44,
+  E: 0x45,
+  F: 0x46,
 };

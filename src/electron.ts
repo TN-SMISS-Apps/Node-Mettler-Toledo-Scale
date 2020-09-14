@@ -20,17 +20,19 @@ function createWindow() {
     console.log('version', '4.0.0');
   });
 
-  // TODO: path?
   mainWindow!.loadFile('dist/templates/electron.html');
 
-  // const exampleWeightResponse = {
-  //   scale_status: '',
-  //   selling_price: 0.75,
-  //   unit_price: 4.22,
-  //   weight: 0.178,
-  // };
+  const exampleWeightResponse = {
+    scale_status: '',
+    selling_price: 0.75,
+    unit_price: 4.22,
+    weight: 0.178,
+  };
+  setTimeout(() => {
+    log(Buffer.from([0x34, 0x00, 0x02, 0x44]));
+  }, 1000);
 
-  // printReceipt(exampleWeightResponse, true)
+  printReceipt(exampleWeightResponse, true);
 
   mainWindow!.on('closed', function () {
     mainWindow = null;

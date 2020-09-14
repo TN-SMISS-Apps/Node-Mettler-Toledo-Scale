@@ -1,6 +1,3 @@
-import { Settings } from 'http2';
-import { ValidatedSettings } from '../types';
-
 /**
  * translates data from scale language to human readable
  * and vice versa

@@ -8,7 +8,8 @@ export const log = (...args: any[]) => {
         return mainWindow?.webContents.send('log', toLog);
       }
       if (Buffer.isBuffer(toLog)) {
-        mainWindow?.webContents.send('log', `Buffer [${toLog}]`);
+        // @ts-ignore
+        mainWindow?.webContents.send('log', `${toLog.inspect().replace('<', '&lt;').replace('>', '&gt;')}`);
       } else {
         if (toLog.toString) {
           mainWindow?.webContents.send('log', toLog.toString());

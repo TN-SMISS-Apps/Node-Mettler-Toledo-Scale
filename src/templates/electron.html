@@ -44,19 +44,12 @@
 
     <script>
       const { ipcRenderer } = require('electron')
-      console.log(ipcRenderer)
       const logsContainer = document.getElementById('logs')
       ipcRenderer.on('log', (event, data) => {
-        console.log("HERERER")
         const log = document.createElement('code')
         log.innerHTML = data
         logsContainer.appendChild(log)
       })
-
-      require('electron').ipcRenderer.on('ping', (event, message) => {
-        console.log(message) // Prints 'whoooooooh!'
-      })
-
     </script>
   </body>
 </html>

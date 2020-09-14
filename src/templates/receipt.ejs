@@ -67,5 +67,14 @@
       </div>
     <% } %>
 
+    <% if (shouldPrintBarcode) { %>
+      <br>
+      <div class="imageWrap">
+      <img src="<%= barcode %>" />
+    </div>
+    <% } %>
+    <br>
+    <p> </p>
+
   </body>
 </html>
