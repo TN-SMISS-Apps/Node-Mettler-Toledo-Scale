@@ -62,6 +62,9 @@ export class BufferTranslator {
    * checks nak reason according to dialog6 docs
    */
   static parseNakReason(_buf: Buffer): BadRequestError {
+    if (this.isNak(_buf)) {
+      return { message: 'No response from scale', error_code: 'TIMEOUT' };
+    }
     const chunks = this.parse(_buf);
     const error_code = chunks[1].toString('utf8');
     const message = ((): string => {

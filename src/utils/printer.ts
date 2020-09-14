@@ -4,19 +4,17 @@ import { log } from '../utils/logger';
 import { join } from 'path';
 import { promises as fs } from 'fs';
 import { mainWindow } from '../electron';
+import { stateService } from '../services/StateService';
 import bwipjs from 'bwip-js';
 import ejs from 'ejs';
 
 /**
  * main function for printing receiptss
  */
-export const printReceipt = async (
-  weight: WeightSuccessResponse,
-  shouldPrintAdditionalText = true,
-  shouldPrintBarcode = true
-) => {
-  const context: ReceiptContext = { ...weight, shouldPrintAdditionalText, shouldPrintBarcode };
-  if (shouldPrintBarcode) {
+export const printReceipt = async (weight: WeightSuccessResponse) => {
+  const { description_text, should_print_additional_text, should_print_barcode } = stateService.getSettingsState();
+  const context: ReceiptContext = { ...weight, description_text, should_print_barcode, should_print_additional_text };
+  if (should_print_barcode) {
     const barcode = await generateBarcode({ scale: 0.75 });
     context.barcode = barcode;
   }
@@ -42,8 +40,8 @@ export const printReceipt = async (
  */
 function sendToPrinter(workerWindow: BrowserWindow) {
   workerWindow.webContents.print({ silent: true, margins: { marginType: 'none' } }, (success, err) => {
-    if (success) log('success');
-    if (err) log('err', err);
+    if (success) log('printed successfully');
+    if (err) log('err while printing', err);
     workerWindow.close();
   });
 }
@@ -59,12 +57,12 @@ async function saveAsPDF(workerWindow: BrowserWindow) {
     try {
       const pdfData = await workerWindow.webContents.printToPDF({});
       await fs.writeFile(filePath, pdfData);
-      log('success');
+      log('pdf file created successfully');
     } catch (error) {
-      log('err', error);
+      log('err while saving pdf', error);
     }
   } else {
-    log('cancelled');
+    log('saving cancelled');
   }
 }
 

@@ -1,7 +1,7 @@
+import { Settings } from './Settings.type';
 import { WeightSuccessResponse } from './WeightSuccessResponse.type';
 
-export type ReceiptContext = WeightSuccessResponse & {
-  shouldPrintAdditionalText: boolean;
-  shouldPrintBarcode: boolean;
-  barcode?: string;
-};
+export type ReceiptContext = WeightSuccessResponse &
+  Omit<Settings, 'unit_price' | 'tare'> & {
+    barcode?: string;
+  };

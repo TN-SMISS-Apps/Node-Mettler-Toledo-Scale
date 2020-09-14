@@ -1,5 +1,23 @@
 # `Node wrapper for communication with mettler toledo scale`
 
+<br>
+<br>
+
+# DEVELOPMENT
+- change `config.ts` pipe paths to match your scale;
+- `npm run watch` - for typescript compilation;
+- `npm run emulate` - optional command, starts emulator, make sure pipe paths are ok (check `src/utils/emulator.ts` for more info);
+- `npm start` - run electron app.
+
+<br>
+<br>
+
+# USING APP
+
+Start electron app and use http endpoints to send commands and receive responses.
+Available requests are listed below.
+
+
 # Connect Pipes
 
 Used for initializing connection between nodejs and mettler toledo scale.
@@ -240,13 +258,18 @@ Set unit price, description text and tare weight.
 
 **Data constraints**
 
+
 ```json
 {
-	"tare": 0.1,
+    "tare": 0.1,
 	"unit_price": 19.32,
-	"description_text": "test"
+    "description_text": "test",
+    "should_print_barcode": true,
+    "should_print_additional_text": false
 }
 ```
+
+`tare`, `should_print_barcode` and `should_print_additional_text` are optional
 
 ## Success Response
 

@@ -150,12 +150,11 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"tare\": 0.1,\n\t\"unit_price\": 19.32,\n\t\"description_text\": \"test\"\n}",
+					"raw": "{\n\t\"tare\": 0.1,\n\t\"unit_price\": 19.32,\n\t\"description_text\": \"test\",\n    \"should_print_barcode\": true,\n    \"should_print_additional_text\": false\n}",
 					"options": {
 						"raw": {
 							"language": "json"
-						},
-						"urlencoded": {}
+						}
 					}
 				},
 				"url": {

@@ -2,17 +2,14 @@ import { OUT_PIPE_PATH, IN_PIPE_PATH } from '../config';
 import { Pipe } from '../classes/Pipe';
 import { _b } from '../utils/bytesConvertion';
 import { merge, forkJoin, of } from 'rxjs';
-import { first, timeout, catchError } from 'rxjs/operators';
+import { first, timeout, catchError, tap } from 'rxjs/operators';
 import { BufferTranslator } from '../classes/BufferTranslator';
 import { ScaleTranslator } from '../classes/ScaleTranslator';
-import {
-  ConnectResponse,
-  ValidatedSettings,
-  Settings,
-  WeightSuccessResponseWithReceiptInfo,
-} from '../types';
+import { ConnectResponse, ValidatedSettings, Settings, WeightSuccessResponseWithReceiptInfo } from '../types';
 import { printReceipt } from '../utils/printer';
 import { log } from '../utils/logger';
+import { stateService } from './StateService';
+import { mainWindow } from '../electron';
 
 // handles
 class ScaleCommunicationService {
@@ -41,11 +38,19 @@ class ScaleCommunicationService {
 
     return forkJoin({
       input: merge(this.input_pipe.errors$, this.input_pipe.is_connected$).pipe(first((v) => !!v)),
-      output: merge(this.output_pipe.errors$, this.output_pipe.is_connected$).pipe(
-        first((v) => !!v),
-      ),
+      output: merge(this.output_pipe.errors$, this.output_pipe.is_connected$).pipe(first((v) => !!v)),
     })
-      .pipe(first((v) => !!v))
+      .pipe(
+        first((v) => !!v),
+        tap(({ input, output }) => {
+          const hasErrors = input instanceof Error || output instanceof Error;
+          const areTruthy = input && output;
+          mainWindow?.webContents.send('connection-changed', { isConnected: areTruthy && !hasErrors });
+          if (hasErrors) {
+            log('errors while connecting to pipes', input, output);
+          }
+        }),
+      )
       .toPromise();
   }
 
@@ -57,6 +62,7 @@ class ScaleCommunicationService {
     if (this.isConnected) {
       this.input_pipe.disconnect();
       this.output_pipe.disconnect();
+      mainWindow?.webContents.send('connection-changed', { isConnected: false });
     }
   }
 
@@ -65,11 +71,10 @@ class ScaleCommunicationService {
    */
   get isConnected() {
     const initialized = Boolean(this.input_pipe && this.output_pipe);
-    return (
-      initialized &&
-      this.input_pipe.is_connected$.getValue() &&
-      this.output_pipe.is_connected$.getValue()
-    );
+    const isConnected =
+      initialized && this.input_pipe.is_connected$.getValue() && this.output_pipe.is_connected$.getValue();
+    mainWindow?.webContents.send('connection-changed', { isConnected });
+    return isConnected;
   }
 
   /**
@@ -107,10 +112,7 @@ class ScaleCommunicationService {
     // handle checksum
     if (BufferTranslator.isChecksumRequired(scaleResp)) {
       const [left, right] = BufferTranslator.parseChecksumRotations(scaleResp);
-      const checksum = Buffer.concat([
-        BufferTranslator.rotateLeft(left),
-        BufferTranslator.rotateRight(right),
-      ]);
+      const checksum = Buffer.concat([BufferTranslator.rotateLeft(left), BufferTranslator.rotateRight(right)]);
       const prefix = Buffer.from([_b.EOT, _b.STX, _b.D1, _b.D0, _b.ESC]);
       const suffix = Buffer.from([_b.ETX]);
       await this.performRawRequest(Buffer.concat([prefix, checksum, suffix]));
@@ -179,15 +181,16 @@ class ScaleCommunicationService {
       description_text: settings.description_text as string,
       tare: ScaleTranslator.translateFloatToString(settings.tare as number, 3, 4),
       unit_price: ScaleTranslator.translateFloatToString(settings.unit_price as number, 2, 6),
+      should_print_barcode: settings.should_print_barcode as boolean,
+      should_print_additional_text: settings.should_print_additional_text as boolean,
     };
-    const scaleResp = await this.requestScale(
-      BufferTranslator.createSettingsRequest(scaleSettings),
-    );
+    const scaleResp = await this.requestScale(BufferTranslator.createSettingsRequest(scaleSettings));
     if (BufferTranslator.isNak(scaleResp)) {
       const why = await this.requestNakExplanation();
       throw BufferTranslator.parseNakReason(why);
     }
     if (BufferTranslator.isAck(scaleResp)) {
+      stateService.setSettingState(scaleSettings);
       return true;
     } else {
       log('Unknown resp');

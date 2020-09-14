@@ -1,8 +1,9 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { app as expressApp } from './server';
 import { PORT } from './config';
-import { printReceipt } from './utils/printer';
 import { log } from './utils/logger';
+import { scaleCommunicationService } from './services/ScaleCommunicationService';
+import * as config from './config';
 
 export let mainWindow: BrowserWindow | null;
 
@@ -17,27 +18,27 @@ function createWindow() {
 
   expressApp.listen(PORT, () => {
     console.log('Listening on', PORT);
-    console.log('version', '4.0.0');
+    console.log('version', '4.1.0');
   });
 
   mainWindow!.loadFile('dist/templates/electron.html');
-
-  const exampleWeightResponse = {
-    scale_status: '',
-    selling_price: 0.75,
-    unit_price: 4.22,
-    weight: 0.178,
-  };
-  setTimeout(() => {
-    log(Buffer.from([0x34, 0x00, 0x02, 0x44]));
-  }, 1000);
-
-  printReceipt(exampleWeightResponse, true);
+  mainWindow.webContents.on('did-finish-load', () => {
+    log(config);
+    scaleCommunicationService.init();
+  });
 
   mainWindow!.on('closed', function () {
     mainWindow = null;
     app.quit();
   });
 }
+
+ipcMain.on('connection-toggle', (_, { isConnected }) => {
+  if (isConnected) {
+    scaleCommunicationService.init();
+  } else {
+    scaleCommunicationService.destroy();
+  }
+});
 
 app.whenReady().then(createWindow);

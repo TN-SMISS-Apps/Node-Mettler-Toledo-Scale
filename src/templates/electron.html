@@ -4,17 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mettler - Toledo Middleware</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="./bootstrap.css">
     <style>
-      .logs {
+      #logs {
         background-color: #f8f9fa;
-        height: 100vh;
+        height: calc(100vh - 31px);
         overflow: auto;
+        position: relative;
+        margin-top: 31px;
+        padding: 8px;
+        padding-bottom: 40px;
+        font-size: 12px;
+      }
+      #logs .bg-info {
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
       }
       .about {
         padding: 8px;
@@ -22,16 +28,20 @@
       code {
         padding: 8px;
       }
+      .timestamp {
+        margin-left: 8px;
+      }
     </style>
   </head>
   <body>
     <div class="layout d-flex">
       <div class="logs d-flex flex-column w-50" id="logs">
-        <code>Logs will be located here:</code>
+        <code class="bg-info w-50">Logs will be located here:</code>
       </div>
       <div class="about">
         <p>Listening on port 3000</p>
-        <p>version 4.0.0</p>
+        <p>version 4.1.0</p>
+        <p>pipes are <a href="javascript:void(0)" onclick="toggleConnection()" id="connection-indicator" class="badge badge-danger">disconnected</a> (clickable)</p>
         <br />
         <p>Factur Modul VCODisp</p>
         <p>Version: 1.00.00</p>
@@ -44,12 +54,50 @@
 
     <script>
       const { ipcRenderer } = require('electron')
+      // handle logs events
       const logsContainer = document.getElementById('logs')
-      ipcRenderer.on('log', (event, data) => {
-        const log = document.createElement('code')
-        log.innerHTML = data
+      function logEvent (event, data) {
+        if(logsContainer.children.length > 2000) {
+          logsContainer.removeChild(logsContainer.firstElementChild.nextSibling)
+        }
+        const log = document.createElement('div')
+        const timestamp = new Date().toString().split('GMT')[0]
+        log.innerHTML = `<span class="timestamp badge badge-secondary">${timestamp}</span> <code>${data}</code>`
+        const shouldScroll = logsContainer.scrollHeight - (logsContainer.scrollTop + logsContainer.clientHeight) <= 30;
         logsContainer.appendChild(log)
+        if (shouldScroll) {
+          logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+      }
+      ipcRenderer.on('log', logEvent)
+
+      // handle connection status change
+      const connectionBadge = document.getElementById('connection-indicator')
+      let localConnectionStatus = false
+      ipcRenderer.on('connection-changed', (event, {isConnected}) => {
+        // check if status changed from what is displayed in ui
+        if (isConnected === localConnectionStatus) return;
+        // set local var
+        localConnectionStatus = isConnected
+        // set ui
+        function setTextAndStyles(html, log, classToRemove, classToAdd) {
+          connectionBadge.innerHTML = html
+          connectionBadge.classList.remove(classToRemove)
+          connectionBadge.classList.add(classToAdd)
+          logEvent(null, log)
+        } 
+        if (isConnected) {
+          setTextAndStyles('connected', 'connected to pipes', 'badge-danger', 'badge-success')
+        } else {
+          setTextAndStyles('disconnected', 'disconnected from pipes', 'badge-success', 'badge-danger')
+        }
       })
+
+      // change connection
+      function toggleConnection() {
+        ipcRenderer.send('connection-toggle', {isConnected: !localConnectionStatus})
+      }
+
     </script>
   </body>
 </html>

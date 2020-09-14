@@ -39,7 +39,7 @@
 
     <div class="row">
       <span class="title">Artikel:</span>
-      <span class="value"><%= unit_price %> €/1kg; </span>
+      <span class="value"><%= description_text %> </span>
     </div>
     <div class="row">
       <span class="title">Grundpreis:</span>
@@ -55,7 +55,7 @@
     </div>
 
 
-    <% if (shouldPrintAdditionalText) { %>
+    <% if (should_print_additional_text) { %>
       <br>
       <div class="additionalText">
         <p>Factur Modul VCODisp</p>
@@ -67,7 +67,7 @@
       </div>
     <% } %>
 
-    <% if (shouldPrintBarcode) { %>
+    <% if (should_print_barcode) { %>
       <br>
       <div class="imageWrap">
       <img src="<%= barcode %>" />

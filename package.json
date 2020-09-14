@@ -1,6 +1,6 @@
 {
   "name": "node-mettler-toledo",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "node mettler-toledo middleware",
   "main": "dist/electron.js",
   "productName": "node-mt-middleware",
@@ -11,7 +11,8 @@
     "compile": "tsc",
     "copy": "copyfiles -f src/templates/* dist/templates",
     "build": "electron-packager . --out release --asar --platfrom=win32 --arch=x64 --prune=true --overwrite",
-    "build:prod": "npm run copy & npm run compile & npm run build & node src/build.js"
+    "build:prod": "npm run copy & npm run compile & npm run build & node src/build.js",
+    "emulate": "ts-node src/utils/emulator.ts"
   },
   "keywords": [],
   "author": "TN",
