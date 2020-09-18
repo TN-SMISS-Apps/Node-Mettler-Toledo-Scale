@@ -4,6 +4,7 @@ import { PORT } from './config';
 import { log } from './utils/logger';
 import { scaleCommunicationService } from './services/ScaleCommunicationService';
 import * as config from './config';
+import { CashDrawerSettings, makeSureSettingsHaveComPort } from './utils/cashDrawer';
 
 export let mainWindow: BrowserWindow | null;
 
@@ -25,6 +26,7 @@ function createWindow() {
   mainWindow.webContents.on('did-finish-load', () => {
     log(config);
     scaleCommunicationService.init();
+    makeSureSettingsHaveComPort()
   });
 
   mainWindow!.on('closed', function () {
@@ -39,6 +41,10 @@ ipcMain.on('connection-toggle', (_, { isConnected }) => {
   } else {
     scaleCommunicationService.destroy();
   }
+});
+
+ipcMain.on('open-cash-drawer-settings', (_) => {
+  CashDrawerSettings.createWindow();
 });
 
 app.whenReady().then(createWindow);

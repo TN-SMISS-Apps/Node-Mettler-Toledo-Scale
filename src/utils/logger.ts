@@ -8,6 +8,9 @@ export const log = (...args: any[]) => {
         if (typeof toLog === 'string') {
           return toLog;
         }
+        if (toLog instanceof Error) {
+          return toLog.message;
+        }
         if (Buffer.isBuffer(toLog)) {
           // @ts-ignore
           return `${toLog.inspect().replace('<', '&lt;').replace('>', '&gt;')}`;

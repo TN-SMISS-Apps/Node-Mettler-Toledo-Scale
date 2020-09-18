@@ -40,8 +40,9 @@
       </div>
       <div class="about">
         <p>Listening on port 3000</p>
-        <p>version 4.2.0</p>
-        <p>pipes are <a href="javascript:void(0)" onclick="toggleConnection()" id="connection-indicator" class="badge badge-danger">disconnected</a> (clickable)</p>
+        <p>App version 4.2.0</p>
+        <p>Pipes are <a href="javascript:void(0)" onclick="toggleConnection()" id="connection-indicator" class="badge badge-danger">disconnected</a> (clickable)</p>
+        <p><a href="javascript:void(0)" onclick="openCashDrawerSettings()" class="badge badge-info">Open cash drawer settings</a></p>
         <br />
         <p>Factur Modul VCODisp</p>
         <p>Version: 1.00.00</p>
@@ -96,6 +97,10 @@
       // change connection
       function toggleConnection() {
         ipcRenderer.send('connection-toggle', {isConnected: !localConnectionStatus})
+      }
+
+      function openCashDrawerSettings() {
+        ipcRenderer.send('open-cash-drawer-settings')
       }
 
     </script>

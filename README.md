@@ -317,3 +317,54 @@ No content
     }
 }
 ```
+
+<br>
+<hr>
+<br>
+
+
+# Open Cash Drawer
+
+Use to open cash drawer.
+
+**URL** : `/cash-drawer/open`
+
+**Method** : `POST`
+
+**Data constraints**
+
+```
+Body not required.
+```
+
+## Success Response
+
+**Code** : `200 OK`
+
+**Content example**
+
+```json
+{
+   "message_sent" : true
+}
+```
+
+## Error Response
+
+**Condition** : COM port failed to open / receive message.
+
+**Code** : `409`
+
+**Content** :
+
+```json
+{
+    "error_code": "COM_PORT",
+    "message": "Error: Resource busy, cannot open /dev/tty.sAirPods-WirelessiAP",
+    "error": {}
+}
+```
+
+<br>
+<hr>
+<br>

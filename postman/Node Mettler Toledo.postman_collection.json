@@ -75,6 +75,39 @@
 			"response": []
 		},
 		{
+			"name": "Open cash drawer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/cash-drawer/open",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"cash-drawer",
+						"open"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Disconnect from pipes",
 			"request": {
 				"method": "POST",

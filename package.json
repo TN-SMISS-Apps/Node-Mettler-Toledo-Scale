@@ -12,7 +12,8 @@
     "copy": "copyfiles -f src/templates/* dist/templates",
     "build": "electron-packager . --out release --asar --platfrom=win32 --arch=x64 --prune=true --overwrite",
     "build:prod": "npm run copy & npm run compile & npm run build & node src/build.js",
-    "emulate": "ts-node src/utils/emulator.ts"
+    "emulate": "ts-node src/utils/emulator.ts",
+    "postinstall": "electron-rebuild"
   },
   "keywords": [],
   "author": "TN",
@@ -24,27 +25,32 @@
     "bwip-js": "^1.7.3",
     "copyfiles": "^2.3.0",
     "ejs": "^3.1.5",
+    "electron-store": "^6.0.0",
     "electron-winstaller": "^4.0.1",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "serialport": "^9.0.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
     "@types/bwip-js": "^1.7.0",
     "@types/ejs": "^3.0.4",
     "@types/electron": "^1.6.10",
+    "@types/electron-store": "^3.2.0",
     "@types/express": "^4.17.3",
     "@types/hapi__joi": "^16.0.12",
     "@types/morgan": "^1.9.0",
     "@types/node": "^12.12.55",
+    "@types/serialport": "^8.0.1",
+    "dot-prop": ">=5.1.1",
     "electron": "^9.3.0",
     "electron-packager": "^15.1.0",
+    "electron-rebuild": "^2.0.3",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
-    "typescript": "^3.9.7",
-    "dot-prop": ">=5.1.1"
+    "typescript": "^3.9.7"
   },
   "pkg": {
     "assets": "node_printer.node",

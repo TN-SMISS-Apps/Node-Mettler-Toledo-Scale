@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./bootstrap.css" />
+    <style>
+      body {
+        padding: 16px;
+      }
+      select {
+        font-size: 12px;
+      }
+      p {
+        margin: 0;
+      }
+      select {
+        width: 220px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="d-flex justify-content-between align-center mb-4">
+      <p>Select COM Port:</p>
+      <select id="com-ports"></select>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button onclick="testDrawer(this)" class="btn btn-sm btn-info">Test drawer</button>
+      <button onclick="savePort()" class="btn btn-sm btn-success">Save</button>
+    </div>
+
+    <script>
+      const { ipcRenderer } = require('electron');
+
+      // init ports select
+      ipcRenderer.on('list-com-ports', (event, { ports, savedPort }) => {
+        const portsSelect = document.getElementById('com-ports');
+        ports.forEach((port) => {
+          const optionEl = document.createElement('option');
+          optionEl.value = port.path;
+          optionEl.innerHTML = port.path;
+          portsSelect.appendChild(optionEl);
+        });
+        if (savedPort) {
+          portsSelect.value = savedPort;
+        }
+      });
+
+      // helper func, gets current selected port
+      function getValue() {
+        return document.getElementById('com-ports').value;
+      }
+
+      function testDrawer(el) {
+        el.setAttribute('disabled', true);
+        setTimeout(() => {
+          el.removeAttribute('disabled');
+        }, 1000);
+        ipcRenderer.send('test-port', { port: getValue() });
+      }
+
+      function savePort() {
+        ipcRenderer.send('save-port', { port: getValue() });
+      }
+    </script>
+  </body>
+</html>

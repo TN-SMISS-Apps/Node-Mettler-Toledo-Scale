@@ -8,3 +8,4 @@ export {
 } from './WeightSuccessResponse.type';
 export { Settings, ValidatedSettings } from './Settings.type';
 export { ReceiptContext } from './ReceiptContext.type'
+export { CashDrawerOpenResponse } from './CashDrawerOpenResponse.type'
