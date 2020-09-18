@@ -18,7 +18,7 @@ function createWindow() {
 
   expressApp.listen(PORT, () => {
     console.log('Listening on', PORT);
-    console.log('version', '4.1.0');
+    console.log('version', '4.2.0');
   });
 
   mainWindow!.loadFile('dist/templates/electron.html');
