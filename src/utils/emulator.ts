@@ -24,6 +24,7 @@ const REQ = {
   WEIGHT: Buffer.from([EOT, ENQ]),
   SETTINGS: Buffer.from([EOT, STX, D0, D5, ESC]),
   WHY_NAK: Buffer.from([EOT, STX, D0, D8, ETX]),
+  LOGIC_VERSION: Buffer.from([EOT, STX, D2, D0, ESC]),
 };
 
 const RESP = {
@@ -51,6 +52,10 @@ const NODEInserver = net.createServer((stream) => {
     }
     if (includes(REQ.WHY_NAK)) {
       nodeOutStream.write(RESP.NAK_REASON);
+    }
+    if (includes(REQ.LOGIC_VERSION)) {
+      const resp = Math.random() > 0.8 ? RESP.NAK : RESP.ACK;
+      nodeOutStream.write(resp);
     }
     console.log('NODEInserver:data => ', data);
   });

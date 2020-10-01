@@ -75,6 +75,39 @@
 			"response": []
 		},
 		{
+			"name": "Open cash drawer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"urlencoded": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/cash-drawer/open",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"cash-drawer",
+						"open"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Disconnect from pipes",
 			"request": {
 				"method": "POST",
@@ -166,6 +199,118 @@
 					"path": [
 						"scale",
 						"settings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show logic version",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeout\": 10000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/scale/show-logic-version",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"scale",
+						"show-logic-version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hide logic version",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/scale/hide-logic-version",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"scale",
+						"hide-logic-version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Open middleware app window",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/window/show",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"window",
+						"show"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Close middleware app window",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/window/show",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"window",
+						"show"
 					]
 				}
 			},

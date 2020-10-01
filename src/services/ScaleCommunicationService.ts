@@ -1,15 +1,15 @@
-import { OUT_PIPE_PATH, IN_PIPE_PATH } from '../config';
-import { Pipe } from '../classes/Pipe';
-import { _b } from '../utils/bytesConvertion';
-import { merge, forkJoin, of } from 'rxjs';
-import { first, timeout, catchError, tap } from 'rxjs/operators';
+import { forkJoin, merge, of } from 'rxjs';
+import { catchError, first, tap, timeout } from 'rxjs/operators';
 import { BufferTranslator } from '../classes/BufferTranslator';
+import { Pipe } from '../classes/Pipe';
 import { ScaleTranslator } from '../classes/ScaleTranslator';
-import { ConnectResponse, ValidatedSettings, Settings, WeightSuccessResponseWithReceiptInfo } from '../types';
-import { printReceipt } from '../utils/printer';
-import { log } from '../utils/logger';
-import { stateService } from './StateService';
+import { IN_PIPE_PATH, OUT_PIPE_PATH } from '../config';
 import { mainWindow } from '../electron';
+import { ConnectResponse, Settings, ValidatedSettings, WeightSuccessResponseWithReceiptInfo } from '../types';
+import { _b } from '../utils/bytesConvertion';
+import { log } from '../utils/logger';
+import { printReceipt } from '../utils/printer';
+import { stateService } from './StateService';
 
 // handles
 class ScaleCommunicationService {
@@ -196,6 +196,31 @@ class ScaleCommunicationService {
       log('Unknown resp');
       log(scaleResp);
       return false;
+    }
+  }
+
+  /**
+   * display logic version number on scale and screen or hide it
+   */
+  async toggleLogicVersionDisplay(shouldBeShown: boolean, timeout?: number) {
+    const { EOT, STX, D0, D1, D2, ESC, ETX } = _b;
+    const hideQuery = Buffer.from([EOT, STX, D2, D0, ESC, D0, ETX]);
+
+    const handleNak = async (request: Promise<Buffer>) => {
+      const buf = await request;
+      if (!BufferTranslator.isNak(buf)) return;
+      const reason = await this.requestNakExplanation();
+      throw BufferTranslator.parseNakReason(reason);
+    };
+
+    if (!shouldBeShown) return handleNak(this.requestScale(hideQuery));
+    else {
+      const showQuery = Buffer.from([EOT, STX, D2, D0, ESC, D1, ETX]);
+      timeout;
+      setTimeout(() => {
+        this.requestScale(hideQuery);
+      }, timeout);
+      return handleNak(this.requestScale(showQuery));
     }
   }
 }

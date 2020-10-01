@@ -241,7 +241,43 @@ etc...
 
 
 
+# Toggle logic version number
 
+Used to collect weight of item on scales.
+
+**URL** : `/scale/show-logic-version` or `/scale/hide-logic-version`
+
+**Method** : `POST`
+
+**Data constraints**
+
+`timeout` - optional param, default is 15000. Value is in milliseconds. If using `/scale/show-logic-version` the logic window will automatically hide in `timeout` ms.
+
+```
+{
+    "timeout": 10000
+}
+```
+
+## Success Response
+
+**Code** : `200 OK`
+
+**Content example**
+
+No response
+
+## Error Response
+
+**Condition** : Lots of reasons, check Dialog6 docs for the full list.
+
+**Code** : `409`
+
+**Content** : same as `/scale/weight`
+
+<br>
+<hr>
+<br>
 
 
 
