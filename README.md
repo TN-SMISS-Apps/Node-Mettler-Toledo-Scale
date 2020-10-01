@@ -317,3 +317,39 @@ No content
     }
 }
 ```
+
+<br>
+<hr>
+<br>
+
+# Window Management
+
+Used for managing app window state (shown/hidden).
+
+**URL** : `/window/show` or `/window/hide`
+
+**Method** : `POST`
+
+**Example** : `curl -X POST http://localhost:3000/window/show`
+
+**Data constraints**
+
+```
+Body not required.
+```
+
+## Success Response
+
+**Code** : `200 OK`
+
+**Content example**
+
+```
+No content
+```
+
+## Error Response
+
+```
+No error responses
+```
