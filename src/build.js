@@ -1,6 +1,7 @@
 const electronInstaller = require('electron-winstaller');
-const path = require('path');
 const { version, author, description } = require('../package');
+
+const fileName = `HFScaIF.exe-v${version}.exe`
 
 const settings = {
   appDirectory: './release/node-mt-middleware-win32-x64',
@@ -9,10 +10,10 @@ const settings = {
   authors: author,
   description,
   // The name of the executable of your built
-  exe: `./Node-mt-middleware.exe`,
+  exe: fileName,
 //   setupIcon: './assets/favicon.ico',
   version,
-  setupExe: `Node-mt-middleware-v${version}.exe`,
+  setupExe: fileName,
   noMsi: true,
 };
 

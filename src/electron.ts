@@ -1,29 +1,29 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { app as expressApp } from './server';
-import { PORT } from './config';
-import { log } from './utils/logger';
-import { scaleCommunicationService } from './services/ScaleCommunicationService';
 import * as config from './config';
+import { PORT } from './config';
+import { app as expressApp } from './server';
+import { scaleCommunicationService } from './services/ScaleCommunicationService';
+import { log } from './utils/logger';
+const { version } = require('../package');
 
 export let mainWindow: BrowserWindow | null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 700,
     webPreferences: {
       nodeIntegration: true,
     },
   });
 
-  expressApp.listen(PORT, () => {
-    console.log('Listening on', PORT);
-    console.log('version', '4.1.0');
-  });
-
   mainWindow!.loadFile('dist/templates/electron.html');
   mainWindow.webContents.on('did-finish-load', () => {
     log(config);
+    expressApp.listen(PORT, () => {
+      log('API listening on', PORT);
+      log('version', version);
+    });
     scaleCommunicationService.init();
   });
 
