@@ -12,7 +12,7 @@
     "copy": "copyfiles -f src/templates/* dist/templates",
     "build": "electron-packager . --out release --asar --platfrom=win32 --arch=x64 --prune=true --overwrite",
     "build:darwin": "electron-packager . --out release --asar --platfrom=darwin --prune=true --overwrite",
-    "build:prod": "npm run copy & npm run compile & npm run build & node src/build.js",
+    "build:prod": "rm -rf exes && npm run copy & npm run compile & npm run build & node src/build.js",
     "emulate": "ts-node src/utils/emulator.ts"
   },
   "keywords": [],

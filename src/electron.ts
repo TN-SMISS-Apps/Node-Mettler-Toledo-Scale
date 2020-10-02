@@ -44,6 +44,7 @@ function createLoadingScreen() {
     height: 550,
     title: `Faktura Modul HF ScaIF v${version}`,
     frame: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: true,
     },
