@@ -10,7 +10,8 @@ const settings = {
   authors: author,
   description,
   // The name of the executable of your built
-  exe: fileName,
+  exe: `./Node-mt-middleware.exe`,
+  loadingGif: null,
 //   setupIcon: './assets/favicon.ico',
   version,
   setupExe: fileName,

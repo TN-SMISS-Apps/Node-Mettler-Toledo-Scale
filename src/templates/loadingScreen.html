@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./bootstrap.css" />
+    <style>
+      .about {
+        background-color: #f8f9fa;
+        overflow: hidden;
+        padding: 8px;
+      }
+      code {
+        padding: 8px;
+      }
+      .timestamp {
+        margin-left: 8px;
+      }
+      .logs,
+      .about {
+        flex: 1;
+      }
+      p {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout d-flex">
+      <div class="about">
+        <p>Factur Modul VCODisp</p>
+        <p>Version: 1.00.00</p>
+        <p>CRC: 5FD93A76</p>
+        <p>Mettler - Toledo (Albstadt) GmbH</p>
+        <p>TC7285</p>
+        <p>Version number Dialog 06: d93-09-104 01</p>
+        <p><b>TELENORMA AG</b></p>
+        <br />
+        <p><b>Faktura Modul HF ScaIF</b></p>
+        <p>Version <span id="version">1.03.</span></p>
+        <p>Zertifizierung beantragt</p>
+        <p>CRC: f017011da3e7a557c2030ef3e79ea83e6fa5e6df</p>
+        <p>Version Dialog 06: d93-09-104 01</p>
+        <br />
+        <p><b>Softwaredisplay VCODisp.</b></p>
+        <p>TC7285</p>
+        <p>CRC: 4711F336</p>
+        <p>Version Dialog 06: d93-09-104 01</p>
+        <br />
+        <p><b>POS-Application:</b></p>
+        <p>HANDELSFAKTOR-Kassensystem Zertifizierung gemäß Faktura Modul HF ScaIF</p>
+      </div>
+    </div>
+
+    <script>
+      const { ipcRenderer } = require('electron');
+      // set version 
+      document.getElementById('version').innerText = require('../../package').version
+    </script>
+  </body>
+</html>
