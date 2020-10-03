@@ -4,9 +4,9 @@ const { version, author, description } = require('../package');
 const fileName = `HFScaIF-v${version}.exe`
 
 const settings = {
-  appDirectory: './release/node-mt-middleware-win32-x64',
+  appDirectory: '../release/node-mt-middleware-win32-x64',
   // Specify the existing folder where
-  outputDirectory: './exes',
+  outputDirectory: '../exes',
   authors: author,
   description,
   // The name of the executable of your built
