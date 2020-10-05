@@ -2,7 +2,7 @@
   "name": "node-mettler-toledo",
   "version": "1.0.3",
   "description": "node mettler-toledo middleware",
-  "main": "src/build-utils/run-bytenode.js",
+  "main": "./dist/run-bytenode.js",
   "productName": "node-mt-middleware",
   "bin": "./dist/index.js",
   "scripts": {
@@ -10,8 +10,10 @@
     "watch": "webpack --mode development --watch",
     "compile": "webpack --mode development",
     "compile:bytenode": "electron src/build-utils/compile-bytenode",
-    "build": "rm dist/*.js && electron-packager . --out release --asar --platfrom=win32 --arch=x64 --prune=true --overwrite",
-    "build:darwin": "npm run compile && rm dist/*.js && electron-packager . --out release --asar --platfrom=darwin --prune=true --overwrite",
+    "prebuild:darwin": "npm run compile && rm dist/crc.js && rm dist/bundle.js",
+    "prebuild": "npm run compile && rm dist/crc.js && rm dist/bundle.js",
+    "build": "electron-packager . --ignore=\"^/src|(postman*|webpack*|tsconfig*|README*)\" --out release --asar --platfrom=win32 --arch=x64 --prune=true --overwrite",
+    "build:darwin": "electron-packager . --ignore=\"^/src|(postman*|webpack*|tsconfig*|README*)\" --out release --asar --platfrom=darwin --prune=true --overwrite",
     "build:prod": "rm -rf exes && npm run compile & npm run build & node src/build-utils/build-exe.js",
     "emulate": "ts-node src/utils/emulator.ts"
   },

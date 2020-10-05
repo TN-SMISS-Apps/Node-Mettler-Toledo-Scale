@@ -22,21 +22,21 @@ function createApplicationWindow() {
   mainWindow!.loadFile('dist/templates/electron.html');
   mainWindow.webContents.once('did-finish-load', async () => {
     const [checksumOk, crc] = await verifyCRC();
-    setTimeout(() => {
-      if (!checksumOk) {
-        dialog.showMessageBox(mainWindow!, { message: 'Checksum mismatch' });
+    if (!checksumOk) {
+      dialog.showMessageBox(mainWindow!, { message: 'Checksum mismatch' });
+      setTimeout(() => {
         return mainWindow!.close();
-      } else {
-        log('Checksums ok');
-        log(config);
-        mainWindow!.webContents.send('set-crc', { crc });
-        expressApp.listen(PORT, () => {
-          log('API listening on', PORT);
-          log('version', version);
-        });
-        scaleCommunicationService.init();
-      }
-    }, 1000);
+      }, 1000);
+    } else {
+      log('Checksums ok');
+      log(config);
+      mainWindow!.webContents.send('set-crc', { crc });
+      expressApp.listen(PORT, () => {
+        log('API listening on', PORT);
+        log('version', version);
+      });
+      scaleCommunicationService.init();
+    }
   });
 
   mainWindow!.on('closed', function () {

@@ -4,4 +4,4 @@ const path = require('path');
 
 const bytenode = require('bytenode');
 
-require(path.resolve(__dirname, '../../dist', 'electron.jsc'));
+require(path.resolve(__dirname, 'electron.jsc'));

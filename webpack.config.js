@@ -46,7 +46,10 @@ module.exports = {
   plugins: [
     new BytenodeCompilerPlugin(),
     new CopyPlugin({
-      patterns: [{ from: './src/templates', to: './templates' }],
+      patterns: [
+        { from: './src/templates', to: './templates' },
+        { from: './src/build-utils/run-bytenode.js', to: './run-bytenode.js' },
+      ],
       options: {
         concurrency: 100,
       },
