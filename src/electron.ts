@@ -1,10 +1,11 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import * as config from './config';
 import { PORT } from './config';
 import { app as expressApp } from './server';
 import { scaleCommunicationService } from './services/ScaleCommunicationService';
+import { verifyCRC } from './utils/CRCVerification';
 import { log } from './utils/logger';
-const { version } = require('../package');
+const { version } = require('../package.json');
 
 export let mainWindow: BrowserWindow | null;
 
@@ -19,13 +20,23 @@ function createApplicationWindow() {
   });
 
   mainWindow!.loadFile('dist/templates/electron.html');
-  mainWindow.webContents.once('did-finish-load', () => {
-    log(config);
-    expressApp.listen(PORT, () => {
-      log('API listening on', PORT);
-      log('version', version);
-    });
-    scaleCommunicationService.init();
+  mainWindow.webContents.once('did-finish-load', async () => {
+    const [checksumOk, crc] = await verifyCRC();
+    setTimeout(() => {
+      if (!checksumOk) {
+        dialog.showMessageBox(mainWindow!, { message: 'Checksum mismatch' });
+        return mainWindow!.close();
+      } else {
+        log('Checksums ok');
+        log(config);
+        mainWindow!.webContents.send('set-crc', { crc });
+        expressApp.listen(PORT, () => {
+          log('API listening on', PORT);
+          log('version', version);
+        });
+        scaleCommunicationService.init();
+      }
+    }, 1000);
   });
 
   mainWindow!.on('closed', function () {

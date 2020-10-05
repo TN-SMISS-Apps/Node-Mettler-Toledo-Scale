@@ -1,10 +1,10 @@
 const path = require('path');
 const cp = require('child_process');
 const fs = require('fs');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const DIST_PATH = path.resolve(__dirname, 'dist');
-const BUNDLE_NAME = 'bundle.js';
-const BUNDLE_PATH = DIST_PATH + '/' + BUNDLE_NAME;
+const BUNDLE_PATH = DIST_PATH + '/bundle.js';
 
 class BytenodeCompilerPlugin {
   constructor(options) {
@@ -12,21 +12,24 @@ class BytenodeCompilerPlugin {
   }
   apply(compiler) {
     compiler.hooks.done.tap('BytenodeCompilerPlugin', async (params) => {
+      // check if files compiled
       try {
         await fs.promises.stat(BUNDLE_PATH);
-        cp.execSync('npm run compile:bytenode');
-        await fs.promises.unlink(BUNDLE_PATH);
-        console.log('COMPILED BYTENODE');
       } catch (error) {
-        console.log(error);
-        console.log('NO BUNDLE FOUND');
+        return console.log(error);
       }
+
+      // compile to bc
+      cp.execSync('npm run compile:bytenode');
+      console.log('COMPILED BYTENODE');
     });
   }
 }
 
 module.exports = {
-  entry: './src/electron.ts',
+  entry: {
+    bundle: './src/electron.ts',
+  },
   target: 'electron-main',
   externals: {
     express: 'require("express")',
@@ -40,12 +43,20 @@ module.exports = {
       },
     ],
   },
-  plugins: [new BytenodeCompilerPlugin()],
+  plugins: [
+    new BytenodeCompilerPlugin(),
+    new CopyPlugin({
+      patterns: [{ from: './src/templates', to: './templates' }],
+      options: {
+        concurrency: 100,
+      },
+    }),
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: BUNDLE_NAME,
+    filename: '[name].js',
     path: DIST_PATH,
   },
 };

@@ -56,7 +56,7 @@
         <p><b>Faktura Modul HF ScaIF</b></p>
         <p>Version <span id="version">1.03.</span></p>
         <p>Zertifizierung beantragt</p>
-        <p>CRC: f017011da3e7a557c2030ef3e79ea83e6fa5e6df</p>
+        <p>CRC: <span id="crc"></span></p>
         <p>Version Dialog 06: d93-09-104 01</p>
         <br />
         <p><b>Softwaredisplay VCODisp.</b></p>
@@ -79,8 +79,11 @@
 
     <script>
       const { ipcRenderer } = require('electron');
-      // set version 
-      document.getElementById('version').innerText = require('../../package').version
+      // set version
+      document.getElementById('version').innerText = require('../../package').version;
+      ipcRenderer.once('set-crc', (_, { crc }) => {
+        document.getElementById('crc').innerText = crc.toUpperCase();
+      });
 
       // handle logs events
       const logsContainer = document.getElementById('logs');
