@@ -45,12 +45,12 @@
         <code class="bg-info w-50">Logs will be located here:</code>
       </div>
       <div class="about">
-        <p>Factur Modul VCODisp</p>
+        <!-- <p>Factur Modul VCODisp</p>
         <p>Version: 1.00.00</p>
         <p>CRC: 5FD93A76</p>
         <p>Mettler - Toledo (Albstadt) GmbH</p>
         <p>TC7285</p>
-        <p>Version number Dialog 06: d93-09-104 01</p>
+        <p>Version number Dialog 06: d93-09-104 01</p> -->
         <p><b>TELENORMA AG</b></p>
         <br />
         <p><b>Faktura Modul HF ScaIF</b></p>
@@ -61,7 +61,7 @@
         <br />
         <p><b>Softwaredisplay VCODisp.</b></p>
         <p>TC7285</p>
-        <p>CRC: 4711F336</p>
+        <p>CRC: 57D690E4</p>
         <p>Version Dialog 06: d93-09-104 01</p>
         <br />
         <p><b>POS-Application:</b></p>
@@ -77,14 +77,18 @@
       </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
       const { ipcRenderer } = require('electron');
       // set version
       document.getElementById('version').innerText = require('../../package').version;
       ipcRenderer.once('set-crc', (_, { crc }) => {
         document.getElementById('crc').innerText = crc.toUpperCase();
       });
-
+      ipcRenderer.on('logs_hide', (event, { hideLogs }) => {
+        console.log(hideLogs);
+        document.getElementById('logs').style.display = 'none';
+      });
+      
       // handle logs events
       const logsContainer = document.getElementById('logs');
       function logEvent(event, data) {

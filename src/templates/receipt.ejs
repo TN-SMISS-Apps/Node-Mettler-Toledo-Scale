@@ -16,7 +16,7 @@
         display: flex;
       }
       .title {
-        min-width: 170px;
+        min-width: 130px;
       }
       .imageWrap {
         text-align: center;
@@ -32,9 +32,11 @@
   </head>
   <body>
     <div class="row">
-      <div class="title">Wäge-Bon:</div>
+      <div class="title"><b>Wägebon/-Protokoll:</b></div>
     </div>
-
+    <div class="additionalText">      
+      <p><%= date %></p>
+    </div>
     <br>
 
     <div class="row">
@@ -58,12 +60,12 @@
     <% if (should_print_additional_text) { %>
       <br>
       <div class="additionalText">
-        <p>Factur Modul VCODisp</p>
-        <p>Version: 1.00.00</p>
-        <p>CRC: 5FD93A76</p>
-        <p>Mettler - Toledo (Albstadt) GmbH</p>
-        <p>TC7285</p>
-        <p>Version number Dialog 06: d93-09-104 01</p>
+        <p>HANDELSFAKTOR Faktura Modul ScaIF</p>
+        <p>Version: <span id="version">1.03.</span></p>
+        <p>CRC: <span id="crc"><%= crc %></span></p>
+        <!-- <p>Mettler - Toledo (Albstadt) GmbH</p> -->
+        <!-- <p>TC7285</p> -->
+        <p>Version Dialog 06: d93-09-104 01</p>
       </div>
     <% } %>
 
@@ -75,6 +77,9 @@
     <% } %>
     <br>
     <p> </p>
-
+    <script>      
+      // set version
+      document.getElementById('version').innerText = require('./package').version;      
+    </script>
   </body>
 </html>

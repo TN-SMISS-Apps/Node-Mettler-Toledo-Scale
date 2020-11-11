@@ -5,19 +5,31 @@ import { join } from 'path';
 import { promises as fs } from 'fs';
 import { mainWindow } from '../electron';
 import { stateService } from '../services/StateService';
+import { verifyCRC } from './CRCVerification';
 import bwipjs from 'bwip-js';
 import ejs from 'ejs';
+
 
 /**
  * main function for printing receiptss
  */
 export const printReceipt = async (weight: WeightSuccessResponse) => {
   const { description_text, should_print_additional_text, should_print_barcode } = stateService.getSettingsState();
-  const context: ReceiptContext = { ...weight, description_text, should_print_barcode, should_print_additional_text };
+  const [checksumOk, crc] = await verifyCRC();
+  const date = new Date();
+  const dateStr = addZ(date.getDate())+'.'+addZ((date.getMonth()+1))+'.'+date.getFullYear()+'; '+date.getHours() + "." + addZ(date.getMinutes()) + ' Uhr';
+  
+  const context: ReceiptContext = { ...weight, 
+    description_text, 
+    should_print_barcode, 
+    should_print_additional_text,
+    date:dateStr,
+    crc:crc.toUpperCase()
+   };
   if (should_print_barcode) {
     const barcode = await generateBarcode({ scale: 0.75 });
     context.barcode = barcode;
-  }
+  }  
   // render template
   ejs.renderFile(join(app.getAppPath(), 'dist/templates/receipt.ejs'), context, (err, data) => {
     if (err) return log(err);
@@ -45,7 +57,8 @@ function sendToPrinter(workerWindow: BrowserWindow) {
     workerWindow.close();
   });
 }
-
+function addZ(n:number)
+{return n<10? '0'+n:''+n;}
 /**
  * saves window as pdf
  */

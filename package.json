@@ -11,10 +11,10 @@
     "compile": "webpack --mode development",
     "compile:bytenode": "electron src/build-utils/compile-bytenode",
     "prebuild:darwin": "npm run compile && rm dist/crc.js && rm dist/bundle.js",
-    "prebuild": "npm run compile && rm dist/crc.js && rm dist/bundle.js",
+    "prebuild": "npm run compile && rimraf dist/crc.js && rimraf dist/bundle.js",
     "build": "electron-packager . --ignore=\"^/src|(postman*|webpack*|tsconfig*|README*)\" --out release --asar --platfrom=win32 --arch=x64 --prune=true --overwrite",
     "build:darwin": "electron-packager . --ignore=\"^/src|(postman*|webpack*|tsconfig*|README*)\" --out release --asar --platfrom=darwin --prune=true --overwrite",
-    "build:prod": "rm -rf exes && npm run compile & npm run build & node src/build-utils/build-exe.js",
+    "build:prod": "rimraf exes && npm run compile & npm run build & node src/build-utils/build-exe.js",
     "emulate": "ts-node src/utils/emulator.ts"
   },
   "keywords": [],
