@@ -23,7 +23,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.0",
     "body-parser": "^1.19.0",
-    "bwip-js": "^1.7.3",
+    "bwip-js": "^2.0.11",
     "bytenode": "^1.1.7",
     "copyfiles": "^2.3.0",
     "crc": "^3.8.0",
