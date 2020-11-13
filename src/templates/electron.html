@@ -67,7 +67,7 @@
         <p><b>POS-Application:</b></p>
         <p>HANDELSFAKTOR-Kassensystem Zertifizierung gemäß Faktura Modul HF ScaIF</p>
         <br />
-        <p>
+        <p id="pipe_button">
           Pipes are
           <a href="javascript:void(0)" onclick="toggleConnection()" id="connection-indicator" class="badge badge-danger"
             >disconnected</a
@@ -85,8 +85,9 @@
         document.getElementById('crc').innerText = crc.toUpperCase();
       });
       ipcRenderer.on('logs_hide', (event, { hideLogs }) => {
-        console.log(hideLogs);
-        document.getElementById('logs').style.display = 'none';
+        const style = hideLogs?'display:none !important':'';
+        document.getElementById('logs').style = style;
+        document.getElementById('pipe_button').style = style;        
       });
       
       // handle logs events
