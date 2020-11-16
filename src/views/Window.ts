@@ -22,7 +22,9 @@ const HideView: RequestHandler = async (_, res) => {
 const ToggleView: RequestHandler = async (_, res) => {
   if (mainWindow?.isVisible()) mainWindow?.hide();
   else {
-    mainWindow?.setAlwaysOnTop(true);    
+    mainWindow?.setAlwaysOnTop(true);
+    mainWindow?.setMenuBarVisibility(false);
+    mainWindow?.setSize(400, 500, true);
     mainWindow?.show();
     setImmediate(() => {
         mainWindow?.setAlwaysOnTop(false);
