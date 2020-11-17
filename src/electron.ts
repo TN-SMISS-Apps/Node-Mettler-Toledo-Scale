@@ -14,12 +14,15 @@ function createApplicationWindow() {
     width: 400,
     height: 600,
     frame:false,
+    focusable:false,
     title: `Faktura Modul HF ScaIF v${version}`,
     webPreferences: {
       nodeIntegration: true,
     },
   });
-  mainWindow!.setPosition(10,10);
+  mainWindow!.setPosition(10,150);
+  mainWindow!.setSkipTaskbar(true);
+
   mainWindow!.loadFile('dist/templates/electron.html');
   mainWindow.webContents.once('did-finish-load', async () => {
     const [checksumOk, crc] = await verifyCRC();
