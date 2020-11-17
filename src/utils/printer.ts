@@ -27,7 +27,8 @@ export const printReceipt = async (weight: WeightSuccessResponse) => {
     crc:crc.toUpperCase()
    };
   if (should_print_barcode) {
-    const barcode = await generateBarcode({ scale: 0.75 });
+    const tmptext = description_text + "," + weight.selling_price
+    const barcode = await generateBarcode({text:tmptext, scale: 1, height: 10 });
     context.barcode = barcode;
   }  
   // render template
