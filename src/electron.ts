@@ -11,14 +11,15 @@ export let mainWindow: BrowserWindow | null;
 
 function createApplicationWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 700,
+    width: 400,
+    height: 600,
+    frame:false,
     title: `Faktura Modul HF ScaIF v${version}`,
     webPreferences: {
       nodeIntegration: true,
     },
   });
-
+  mainWindow!.setPosition(10,10);
   mainWindow!.loadFile('dist/templates/electron.html');
   mainWindow.webContents.once('did-finish-load', async () => {
     const [checksumOk, crc] = await verifyCRC();
@@ -31,6 +32,10 @@ function createApplicationWindow() {
       log('Checksums ok');
       log(config);
       mainWindow!.webContents.send('set-crc', { crc });
+      mainWindow!.on('close', (event) => {
+        event.preventDefault();
+        mainWindow!.hide();
+      })
       expressApp.listen(PORT, () => {
         log('API listening on', PORT);
         log('version', version);
@@ -60,7 +65,7 @@ function createLoadingScreen() {
       nodeIntegration: true,
     },
   });
-  mainWindow!.loadFile('dist/templates/loadingScreen.html');
+  mainWindow!.loadFile('dist/templates/loadingScreen.html');  
   mainWindow!.on('closed', function () {
     mainWindow = null;
     app.quit();
