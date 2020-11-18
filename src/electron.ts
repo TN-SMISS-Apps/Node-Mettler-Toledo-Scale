@@ -35,6 +35,7 @@ function createApplicationWindow() {
       log('Checksums ok');
       log(config);
       mainWindow!.webContents.send('set-crc', { crc });
+      mainWindow!.hide();
       mainWindow!.on('close', (event) => {
         event.preventDefault();
         mainWindow!.hide();
