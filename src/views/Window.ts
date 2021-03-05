@@ -25,11 +25,11 @@ const ToggleView: RequestHandler = async (_, res) => {
     mainWindow?.setAlwaysOnTop(true, "screen-saver");
     mainWindow?.setMenuBarVisibility(false);
     // mainWindow?.removeMenu();
-    mainWindow?.setSize(300,450);
+    mainWindow?.setSize(320,450);
     mainWindow?.show();
     setImmediate(() => {
         mainWindow?.setAlwaysOnTop(false);
-        mainWindow?.setSize(400,600);
+        // mainWindow?.setSize(300,320);
     });
     const hideLogs = true;
     mainWindow?.webContents.send('logs_hide', {hideLogs});

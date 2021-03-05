@@ -183,6 +183,7 @@ class ScaleCommunicationService {
       unit_price: ScaleTranslator.translateFloatToString(settings.unit_price as number, 2, 6),
       should_print_barcode: settings.should_print_barcode as boolean,
       should_print_additional_text: settings.should_print_additional_text as boolean,
+      ean: settings.ean as string,
     };
     const scaleResp = await this.requestScale(BufferTranslator.createSettingsRequest(scaleSettings));
     if (BufferTranslator.isNak(scaleResp)) {

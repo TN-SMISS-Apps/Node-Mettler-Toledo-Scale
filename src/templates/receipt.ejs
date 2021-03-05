@@ -1,85 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      html {
-        font-size: 12px;
-        font-family: 'Arial';
-      }
-      body, p {
-        margin: 0;
-      }
-      .row {
-        display: flex;
-      }
-      .title {
-        min-width: 130px;
-      }
-      .imageWrap {
-        text-align: center;
-        padding-bottom: 20px;
-      }
-      img {
-        margin-top: 8px;
-      }
-      .additionalText {
-        font-size: 9px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="row">
-      <div class="title"><b>Wägebon/-Protokoll:</b></div>
-    </div>
-    <div class="additionalText">      
-      <p><%= date %></p>
-    </div>
-    <br>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            html {
+                font-size: 12px;
+                font-family: 'Arial';
+            }
+            body,
+            p {
+                margin: 0;
+            }
+            .row {
+                display: flex;
+            }
+            .title {
+                min-width: 130px;
+            }
+            .imageWrap {
+                text-align: center;
+                padding-bottom: 20px;
+            }
+            img {
+                margin-top: 8px;
+            }
+            .additionalText {
+                font-size: 9px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="title"><b>Wägebon/-Protokoll:</b></div>
+        </div>
+        <div class="additionalText">
+            <p><%= date %></p>
+        </div>
+        <br />
 
-    <div class="row">
-      <span class="title">Artikel:</span>
-      <span class="value"><%= description_text %> </span>
-    </div>
-    <div class="row">
-      <span class="title">Grundpreis:</span>
-      <span class="value"><%= unit_price %> €/1kg; </span>
-    </div>
-    <div class="row">
-      <span class="title">Gewogenes Gewicht:</span>
-      <span class="value"><%= weight %> kg; </span>
-    </div>
-    <div class="row">
-      <span class="title">Preis:</span>
-      <span class="value"><%= selling_price %> € </span>
-    </div>
+        <div class="row">
+            <span class="title">Artikel:</span>
+            <span class="value"><%= description_text %> </span>
+        </div>
+        <div class="row">
+            <span class="title">Grundpreis:</span>
+            <span class="value"><%= unit_price %> €/1kg; </span>
+        </div>
+        <div class="row">
+            <span class="title">Gewogenes Gewicht:</span>
+            <span class="value"><%= weight %> kg; </span>
+        </div>
+        <div class="row">
+            <span class="title">Preis:</span>
+            <span class="value"><%= selling_price %> € </span>
+        </div>
 
-
-    <% if (should_print_additional_text) { %>
-      <br>
-      <div class="additionalText">
-        <p>HANDELSFAKTOR Faktura Modul ScaIF</p>
-        <p>Version: <span id="version">1.03.</span></p>
-        <p>CRC: <span id="crc"><%= crc %></span></p>
-        <!-- <p>Mettler - Toledo (Albstadt) GmbH</p> -->
-        <!-- <p>TC7285</p> -->
-        <p>Version Dialog 06: d93-09-104 01</p>
-      </div>
-    <% } %>
-
-    <% if (should_print_barcode) { %>
-      <br>
-      <div class="imageWrap">
-      <img src="<%= barcode %>" />
-    </div>
-    <% } %>
-    <br>
-    <p> </p>
-    <script>      
-      // set version
-      document.getElementById('version').innerText = require('./package').version;      
-    </script>
-  </body>
+        <% if (should_print_additional_text) { %>
+        <br />
+        <div class="additionalText">
+            <p>HANDELSFAKTOR Faktura Modul ScaIF</p>
+            <p>Version: <span id="version">1.03.</span></p>
+            <p>CRC: <span id="crc"><%= crc %></span></p>
+            <!-- <p>Mettler - Toledo (Albstadt) GmbH</p> -->
+            <!-- <p>TC7285</p> -->
+            <p>Version Dialog 06: d93-09-104 01</p>
+        </div>
+        <% } %> <% if (should_print_barcode) { %>
+        <br />
+        <div class="imageWrap">
+            <img src="<%= barcode %>" />
+        </div>
+        <% } %>
+        <br />
+        <p></p>
+        <script>
+            // set version
+            document.getElementById(
+                'version'
+            ).innerText = require('./package').version;
+        </script>
+    </body>
 </html>
