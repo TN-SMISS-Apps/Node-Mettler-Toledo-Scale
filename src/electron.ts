@@ -1,6 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import * as config from './config';
-import { PORT } from './config';
+import { PORT, PORT_HTTPS } from './config';
 import { app as expressApp } from './server';
 import https from 'https';
 import http from 'http';
@@ -61,8 +61,8 @@ function createApplicationWindow() {
             };
             const httpsServer = https
                 .createServer(httpsOptions, expressApp)
-                .listen(8443, () => {
-                    log('API listening on', 8443);
+                .listen(PORT_HTTPS, () => {
+                    log('API listening on', PORT_HTTPS);
                     log('version', version);
                 });
             const httpServer = http
@@ -73,9 +73,10 @@ function createApplicationWindow() {
                 });
 
             scaleCommunicationService.init();
-            setTimeout(() => {
-                return mainWindow!.hide();
-            }, 6000);
+            //HERE DO NOT HIDE WINDOWS
+            // setTimeout(() => {
+            //     return mainWindow!.hide();
+            // }, 6000);
         }
     });
 

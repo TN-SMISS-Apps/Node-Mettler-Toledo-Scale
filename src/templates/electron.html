@@ -1,138 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./bootstrap.css" />
-    <style>
-      #logs {
-        background-color: #f8f9fa;
-        height: calc(100vh - 31px);
-        overflow: auto;
-        position: relative;
-        margin-top: 31px;
-        padding: 8px;
-        padding-bottom: 40px;
-        font-size: 12px;
-      }
-      #logs .bg-info {
-        color: #fff;
-        position: fixed;
-        top: 0;
-        left: 0;
-      }
-      .about {
-        padding: 8px;
-      }
-      code {
-        padding: 8px;
-      }
-      .timestamp {
-        margin-left: 8px;
-      }
-      .logs,
-      .about {
-        flex: 1;
-      }
-      p {
-        margin-bottom: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="layout d-flex">
-      <div class="logs d-flex flex-column w-50" id="logs">
-        <code class="bg-info w-50">Logs will be located here:</code>
-      </div>
-      <div class="about">
-        <!-- <p>Factur Modul VCODisp</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./bootstrap.css" />
+        <style>
+            #logs {
+                background-color: #f8f9fa;
+                height: calc(100vh - 31px);
+                overflow: auto;
+                position: relative;
+                margin-top: 31px;
+                padding: 8px;
+                padding-bottom: 40px;
+                font-size: 12px;
+            }
+            #logs .bg-info {
+                color: #fff;
+                position: fixed;
+                top: 0;
+                left: 0;
+            }
+            .about {
+                padding: 8px;
+            }
+            code {
+                padding: 8px;
+            }
+            .timestamp {
+                margin-left: 8px;
+            }
+            .logs,
+            .about {
+                flex: 1;
+            }
+            p {
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="layout d-flex">
+            <div class="logs d-flex flex-column w-50" id="logs">
+                <code class="bg-info w-50">Logs will be located here:</code>
+            </div>
+            <div class="about">
+                <!-- <p>Factur Modul VCODisp</p>
         <p>Version: 1.00.00</p>
         <p>CRC: 5FD93A76</p>
         <p>Mettler - Toledo (Albstadt) GmbH</p>
         <p>TC7285</p>
         <p>Version number Dialog 06: d93-09-104 01</p> -->
-        <p><b>TELENORMA AG</b></p>
-        <br />
-        <p><b>Faktura Modul HF ScaIF</b></p>
-        <p>Version <span id="version">1.03.</span></p>
-        <p>Zertifizierung beantragt</p>
-        <p>CRC: <span id="crc"></span></p>
-        <p>Version Dialog 06: d93-09-104 01</p>
-        <br />
-        <p><b>Softwaredisplay VCODisp.</b></p>
-        <p>TC7285</p>
-        <p>CRC: 57D690E4</p>
-        <p>Version Dialog 06: d93-09-104 01</p>
-        <br />
-        <p><b>POS-Application:</b></p>
-        <p>HANDELSFAKTOR-Kassensystem Zertifizierung gemäß Faktura Modul HF ScaIF</p>
-        <br />
-        <p id="pipe_button">
-          Pipes are
-          <a href="javascript:void(0)" onclick="toggleConnection()" id="connection-indicator" class="badge badge-danger"
-            >disconnected</a
-          >
-          (clickable)
-        </p>
-      </div>
-    </div>
+                <p><b>TELENORMA AG</b></p>
+                <br />
+                <p><b>Faktura Modul HF ScaIF</b></p>
+                <p>Version <span id="version">1.03.</span></p>
+                <p>Zertifikatsnummer: DE-21-PC-PTB009</p>
+                <p>CRC: <span id="crc"></span></p>
+                <p>Version Dialog 06: d93-09-104 01</p>
+                <br />
+                <p><b>Softwaredisplay VCODisp.</b></p>
+                <p>TC7285</p>
+                <p>CRC: 57D690E4</p>
+                <p>Version Dialog 06: d93-09-104 01</p>
+                <br />
+                <p><b>POS-Application:</b></p>
+                <p>
+                    HANDELSFAKTOR-Kassensystem Zertifizierung gemäß Faktura
+                    Modul HF ScaIF
+                </p>
+                <br />
+                <p id="pipe_button">
+                    Pipes are
+                    <a
+                        href="javascript:void(0)"
+                        onclick="toggleConnection()"
+                        id="connection-indicator"
+                        class="badge badge-danger"
+                        >disconnected</a
+                    >
+                    (clickable)
+                </p>
+            </div>
+        </div>
 
-    <script type="text/javascript">
-      const { ipcRenderer } = require('electron');
-      // set version
-      document.getElementById('version').innerText = require('../../package').version;
-      ipcRenderer.once('set-crc', (_, { crc }) => {
-        document.getElementById('crc').innerText = crc.toUpperCase();
-      });
-      ipcRenderer.on('logs_hide', (event, { hideLogs }) => {
-        const style = hideLogs?'display:none !important':'';
-        document.getElementById('logs').style = style;
-        document.getElementById('pipe_button').style = style;        
-      });
-      
-      // handle logs events
-      const logsContainer = document.getElementById('logs');
-      function logEvent(event, data) {
-        if (logsContainer.children.length > 2000) {
-          logsContainer.removeChild(logsContainer.firstElementChild.nextSibling);
-        }
-        const log = document.createElement('div');
-        const timestamp = new Date().toString().split('GMT')[0];
-        log.innerHTML = `<span class="timestamp badge badge-secondary">${timestamp}</span> <code>${data}</code>`;
-        const shouldScroll = logsContainer.scrollHeight - (logsContainer.scrollTop + logsContainer.clientHeight) <= 30;
-        logsContainer.appendChild(log);
-        if (shouldScroll) {
-          logsContainer.scrollTop = logsContainer.scrollHeight;
-        }
-      }
-      ipcRenderer.on('log', logEvent);
+        <script type="text/javascript">
+            const { ipcRenderer } = require('electron');
+            // set version
+            document.getElementById(
+                'version'
+            ).innerText = require('../../package').version;
+            ipcRenderer.once('set-crc', (_, { crc }) => {
+                document.getElementById('crc').innerText = crc.toUpperCase();
+            });
+            ipcRenderer.on('logs_hide', (event, { hideLogs }) => {
+                const style = hideLogs ? 'display:none !important' : '';
+                document.getElementById('logs').style = style;
+                document.getElementById('pipe_button').style = style;
+            });
 
-      // handle connection status change
-      const connectionBadge = document.getElementById('connection-indicator');
-      let localConnectionStatus = false;
-      ipcRenderer.on('connection-changed', (event, { isConnected }) => {
-        // check if status changed from what is displayed in ui
-        if (isConnected === localConnectionStatus) return;
-        // set local var
-        localConnectionStatus = isConnected;
-        // set ui
-        function setTextAndStyles(html, log, classToRemove, classToAdd) {
-          connectionBadge.innerHTML = html;
-          connectionBadge.classList.remove(classToRemove);
-          connectionBadge.classList.add(classToAdd);
-          logEvent(null, log);
-        }
-        if (isConnected) {
-          setTextAndStyles('connected', 'connected to pipes', 'badge-danger', 'badge-success');
-        } else {
-          setTextAndStyles('disconnected', 'disconnected from pipes', 'badge-success', 'badge-danger');
-        }
-      });
+            // handle logs events
+            const logsContainer = document.getElementById('logs');
+            function logEvent(event, data) {
+                if (logsContainer.children.length > 2000) {
+                    logsContainer.removeChild(
+                        logsContainer.firstElementChild.nextSibling
+                    );
+                }
+                const log = document.createElement('div');
+                const timestamp = new Date().toString().split('GMT')[0];
+                log.innerHTML = `<span class="timestamp badge badge-secondary">${timestamp}</span> <code>${data}</code>`;
+                const shouldScroll =
+                    logsContainer.scrollHeight -
+                        (logsContainer.scrollTop +
+                            logsContainer.clientHeight) <=
+                    30;
+                logsContainer.appendChild(log);
+                if (shouldScroll) {
+                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                }
+            }
+            ipcRenderer.on('log', logEvent);
 
-      // change connection
-      function toggleConnection() {
-        ipcRenderer.send('connection-toggle', { isConnected: !localConnectionStatus });
-      }
-    </script>
-  </body>
+            // handle connection status change
+            const connectionBadge = document.getElementById(
+                'connection-indicator'
+            );
+            let localConnectionStatus = false;
+            ipcRenderer.on('connection-changed', (event, { isConnected }) => {
+                // check if status changed from what is displayed in ui
+                if (isConnected === localConnectionStatus) return;
+                // set local var
+                localConnectionStatus = isConnected;
+                // set ui
+                function setTextAndStyles(
+                    html,
+                    log,
+                    classToRemove,
+                    classToAdd
+                ) {
+                    connectionBadge.innerHTML = html;
+                    connectionBadge.classList.remove(classToRemove);
+                    connectionBadge.classList.add(classToAdd);
+                    logEvent(null, log);
+                }
+                if (isConnected) {
+                    setTextAndStyles(
+                        'connected',
+                        'connected to pipes',
+                        'badge-danger',
+                        'badge-success'
+                    );
+                } else {
+                    setTextAndStyles(
+                        'disconnected',
+                        'disconnected from pipes',
+                        'badge-success',
+                        'badge-danger'
+                    );
+                }
+            });
+
+            // change connection
+            function toggleConnection() {
+                ipcRenderer.send('connection-toggle', {
+                    isConnected: !localConnectionStatus,
+                });
+            }
+        </script>
+    </body>
 </html>
